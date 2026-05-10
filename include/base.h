@@ -73,6 +73,13 @@ void search_by_id(int targetId);
 void show_ranking(int rankingAmount);
 
 /**
+ * @brief Muestra el k-esimo mejor deportista segun puntaje usando Quick Select.
+ *
+ * @param k Posicion del deportista a mostrar, comenzando desde 1.
+ */
+void show_kth_best(int k);
+
+/**
  * @brief Imprime la ayuda de uso del programa.
  *
  * @param programName Nombre del ejecutable.

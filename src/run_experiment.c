@@ -232,6 +232,57 @@ void show_ranking(int rankingAmount)
 }
 
 /**
+ * @brief Muestra el k-esimo mejor deportista segun puntaje usando Quick Select.
+ *
+ * Carga los deportistas desde el CSV y aplica Quick Select para encontrar
+ * el deportista que quedaria en la posicion k si el arreglo estuviera
+ * ordenado por puntaje de forma descendente.
+ *
+ * @param k Posicion buscada, comenzando desde 1.
+ */
+void show_kth_best(int k)
+{
+    Deportista *deportistas = NULL;
+    Deportista selected = NULL;
+    int count = 0;
+    char detail[64];
+
+    if(k <= 0) {
+        print_error(ERROR_INVALID_RANKING_AMOUNT, NULL);
+        return;
+    }
+
+    if(!load_data(&deportistas, &count)) {
+        return;
+    }
+
+    if(k > count) {
+        snprintf(detail, sizeof(detail), "k debe estar entre 1 y %d", count);
+
+        print_error(ERROR_INVALID_RANKING_AMOUNT, detail);
+        free_deportistas_array(deportistas, count);
+        return;
+    }
+
+    selected = quick_select_deportista( deportistas, count, k, SORT_BY_PUNTAJE, DESCENDING, PIVOT_MEDIAN_OF_THREE );
+
+    if(selected == NULL) {
+        print_error(ERROR_NOT_IMPLEMENTED, "No se pudo aplicar Quick Select");
+        free_deportistas_array(deportistas, count);
+        return;
+    }
+
+    printf(
+        BOLD BLUE "\n=== %d-esimo mejor deportista por puntaje ===\n" NORMAL,
+        k
+    );
+
+    print_deportista(selected);
+
+    free_deportistas_array(deportistas, count);
+}
+
+/**
  * @brief Imprime la ayuda de uso del programa.
  *
  * @param programName Nombre del ejecutable.
@@ -244,6 +295,7 @@ void print_help(const char *programName)
     printf("  -t                 Ejecuta el flujo interactivo de ordenamiento\n");
     printf("  -id [valor]        Busca un deportista por ID\n");
     printf("  -r [cantidad]      Muestra el top N por puntaje\n");
+    printf("  -k [posicion]      Muestra el k-esimo mejor deportista por puntaje\n");
     printf("  -b                 Ejecuta benchmark de busqueda\n");
     printf("  -s                 Ejecuta benchmark de ordenamiento\n");
 }

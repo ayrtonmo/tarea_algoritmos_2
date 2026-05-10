@@ -123,6 +123,83 @@ static void quick_sort_recursive(Deportista *deportistas, int low, int high, Sor
 }
 
 /**
+ * @brief Aplica Quick Select de forma recursiva sobre un rango del arreglo.
+ *
+ * TODO: explicar brevemente maybe?
+ * 
+ * @param deportistas Arreglo de deportistas.
+ * @param low Indice inicial del rango actual.
+ * @param high Indice final del rango actual.
+ * @param targetIndex Indice objetivo que se desea encontrar.
+ * @param criteria Criterio utilizado para comparar deportistas.
+ * @param order Orden de comparacion, ascendente o descendente.
+ * @param pivotType Variante de pivote utilizada.
+ * @return int Indice donde queda ubicado el elemento seleccionado.
+ */
+static int quick_select_recursive(Deportista *deportistas, int low, int high, int targetIndex, SortCriteria criteria, SortOrder order, PivotType pivotType)
+{
+    if(low == high) {
+        return low;
+    }
+
+    int pivotIndexToUse = choose_pivot_index( deportistas, low, high, criteria, pivotType );
+
+    swap_deportistas( &deportistas[pivotIndexToUse], &deportistas[high] );
+
+    int pivotIndex = partition_lomuto( deportistas, low, high, criteria, order );
+
+    if(pivotIndex == targetIndex) {
+        return pivotIndex;
+    }
+
+    if(targetIndex < pivotIndex) {
+        return quick_select_recursive( deportistas, low, pivotIndex - 1, targetIndex, criteria, order, pivotType );
+    }
+
+    return quick_select_recursive( deportistas, pivotIndex + 1, high, targetIndex, criteria, order, pivotType );
+}
+
+/**
+ * @brief Obtiene el k-esimo deportista segun un criterio usando Quick Select.
+ *
+ * Esta funcion permite encontrar el elemento que quedaria en la posicion k
+ * si el arreglo estuviera completamente ordenado segun el criterio y orden
+ * indicados.
+ *
+ * El parametro k se interpreta desde 1. Por ejemplo, k = 1 representa el
+ * mejor deportista si se usa SORT_BY_PUNTAJE con orden DESCENDING.
+ * 
+ * @param deportistas Arreglo de deportistas.
+ * @param count Cantidad de deportistas almacenados en el arreglo.
+ * @param k Posicion buscada, comenzando desde 1.
+ * @param criteria Criterio utilizado para comparar deportistas.
+ * @param order Orden de comparacion, ascendente o descendente.
+ * @param pivotType Variante de pivote utilizada.
+ * @return Deportista Deportista encontrado en la posicion k.
+ * @return NULL si los parametros son invalidos.
+ */
+Deportista quick_select_deportista( Deportista *deportistas, int count, int k, SortCriteria criteria, SortOrder order, PivotType pivotType )
+{
+    if(deportistas == NULL || count <= 0) {
+        return NULL;
+    }
+
+    if(k < 1 || k > count) {
+        return NULL;
+    }
+
+    int targetIndex = k - 1;
+
+    int selectedIndex = quick_select_recursive( deportistas, 0, count - 1, targetIndex, criteria, order, pivotType );
+
+    if(selectedIndex < 0) {
+        return NULL;
+    }
+
+    return deportistas[selectedIndex];
+}
+
+/**
  * @brief Ordena un arreglo de deportistas utilizando Quick Sort.
  *
  * Valida que el arreglo tenga datos suficientes y luego llama a la

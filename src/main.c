@@ -32,7 +32,7 @@ int main(int argc, char **argv)
         return EXIT_SUCCESS;
     }
 
-    while((opt = getopt_long(argc, argv, "hg:tr:bs", longOptions, NULL)) != -1) {
+    while((opt = getopt_long(argc, argv, "hg:tr:k:bs", longOptions, NULL)) != -1) {
         switch(opt) {
             case 'h':
                 print_help(argv[0]);
@@ -73,6 +73,18 @@ int main(int argc, char **argv)
                 }
 
                 show_ranking(rankingAmount);
+                break;
+            }
+            case 'k':
+            {
+                int k = atoi(optarg);
+
+                if(k <= 0) {
+                    print_error(ERROR_INVALID_RANKING_AMOUNT, NULL);
+                    return EXIT_FAILURE;
+                }
+
+                show_kth_best(k);
                 break;
             }
             case 'b':

@@ -68,5 +68,6 @@ typedef enum {
 
 int compare_by_criteria(Deportista left, Deportista right, SortCriteria criteria);
 void quick_sort_deportistas(Deportista *deportistas, int count, SortCriteria criteria, SortOrder order, PivotType pivotType);
+Deportista quick_select_deportista(Deportista *deportistas, int count, int k, SortCriteria criteria, SortOrder order, PivotType pivotType);
 
 #endif

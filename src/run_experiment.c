@@ -72,6 +72,37 @@ static SortAlgorithm ask_sort_algorithm(void)
 }
 
 /**
+ * @brief Pregunta que variante de pivote usar en Quick Sort.
+ *
+ * @return PivotType Variante de pivote seleccionada.
+ */
+static PivotType ask_quick_sort_pivot(void)
+{
+    char option[16];
+    int selected;
+
+    do {
+        system("clear");
+
+        printf(BOLD BLUE "=== Variante de pivote Quick Sort ===\n" NORMAL);
+        printf("  1) Ultimo elemento\n");
+        printf("  2) Primer elemento\n");
+        printf("  3) Elemento aleatorio\n");
+        printf("  4) Mediana de tres\n\n");
+        printf(BOLD "Opcion: " NORMAL);
+
+        if(fgets(option, sizeof(option), stdin) == NULL) {
+            return PIVOT_LAST;
+        }
+
+        selected = atoi(option);
+    }
+    while(selected < PIVOT_LAST || selected > PIVOT_MEDIAN_OF_THREE);
+
+    return (PivotType)selected;
+}
+
+/**
  * @brief Pregunta que busqueda usar.
  *
  * @return SearchAlgorithm Opcion seleccionada.
@@ -122,7 +153,9 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
     // Poner un switch con cada algoritmo y dentro de cada caso cargar datos, ordenar, imprimir resultado y liberar memoria
     switch(algorithmOption) {
         case QUICK_SORT:
-            quick_sort_deportistas(deportistas, count, criteria, order, PIVOT_LAST);
+            PivotType pivotType = ask_quick_sort_pivot();
+
+            quick_sort_deportistas(deportistas, count, criteria, order, pivotType);
             break;
         default:
             print_error(ERROR_NOT_IMPLEMENTED, NULL);

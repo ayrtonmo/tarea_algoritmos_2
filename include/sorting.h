@@ -8,6 +8,7 @@
 
 #include "deportista.h"
 #include <string.h>
+#include <stdlib.h>
 
 /**
  * @brief Criterios disponibles para ordenar deportistas.
@@ -59,10 +60,10 @@ typedef enum {
  * @brief Tipos de pivote disponibles para la busqueda.
  */
 typedef enum {
-    PIVOT_LAST = 1,
-    PIVOT_FIRST = 2,
-    PIVOT_RANDOM = 3,
-    PIVOT_MEDIAN_OF_THREE = 4
+    PIVOT_LAST = 1,             /**< Usa el ultimo elemento como pivote. */
+    PIVOT_FIRST = 2,            /**< Usa el primer elemento como pivote. */
+    PIVOT_RANDOM = 3,           /**< Usa un elemento aleatorio como pivote. */
+    PIVOT_MEDIAN_OF_THREE = 4   /**< Usa la mediana entre primero, medio y ultimo. */
 } PivotType;
 
 int compare_by_criteria(Deportista left, Deportista right, SortCriteria criteria);

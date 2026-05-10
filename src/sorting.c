@@ -7,6 +7,60 @@
 #include "deportista.h"
 
 /**
+ * @brief Selecciona el indice del pivote segun la variante de Quick Sort.
+ *
+ * Para mantener el esquema de particion Lomuto, la funcion solo elige
+ * el indice del pivote. Luego, el pivote seleccionado se intercambia
+ * con la posicion high antes de particionar.
+ *
+ * @param deportistas Arreglo de deportistas.
+ * @param low Indice inicial del rango actual.
+ * @param high Indice final del rango actual.
+ * @param criteria Criterio utilizado para comparar deportistas.
+ * @param pivotType Variante de pivote seleccionada.
+ * @return int Indice del pivote seleccionado.
+ */
+static int choose_pivot_index(Deportista *deportistas, int low, int high, SortCriteria criteria, PivotType pivotType)
+{
+    switch(pivotType) {
+        case PIVOT_FIRST:
+            return low;
+
+        case PIVOT_RANDOM:
+            return low + rand() % (high - low + 1);
+
+        case PIVOT_MEDIAN_OF_THREE:
+        {
+            int mid = low + (high - low) / 2;
+
+            Deportista first = deportistas[low];
+            Deportista middle = deportistas[mid];
+            Deportista last = deportistas[high];
+
+            int firstMiddle = compare_by_criteria(first, middle, criteria);
+            int firstLast = compare_by_criteria(first, last, criteria);
+            int middleLast = compare_by_criteria(middle, last, criteria);
+
+            if((firstMiddle >= 0 && firstLast <= 0) ||
+               (firstMiddle <= 0 && firstLast >= 0)) {
+                return low;
+            }
+
+            if((firstMiddle <= 0 && middleLast >= 0) ||
+               (firstMiddle >= 0 && middleLast <= 0)) {
+                return mid;
+            }
+
+            return high;
+        }
+
+        case PIVOT_LAST:
+        default:
+            return high;
+    }
+}
+
+/**
  * @brief Particiona un arreglo de deportistas usando el esquema de Lomuto.
  *
  * Toma como pivote el ultimo elemento del rango indicado y reorganiza
@@ -26,11 +80,7 @@ static int partition_lomuto(Deportista *deportistas, int low, int high, SortCrit
     int i = low - 1;
 
     for(int j = low; j < high; j++) {
-        int comparison = compare_by_criteria(
-            deportistas[j],
-            pivot,
-            criteria
-        );
+        int comparison = compare_by_criteria(deportistas[j], pivot, criteria);
 
         int shouldSwap = (order == ASCENDING && comparison <= 0) || (order == DESCENDING && comparison >= 0);
 
@@ -57,14 +107,18 @@ static int partition_lomuto(Deportista *deportistas, int low, int high, SortCrit
  * @param criteria Criterio de ordenamiento utilizado para comparar deportistas.
  * @param order Orden de ordenamiento, ascendente o descendente.
  */
-static void quick_sort_recursive(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order)
+static void quick_sort_recursive(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order, PivotType pivotType)
 {
     if(low < high) {
-        int pivotIndex = partition_lomuto(deportistas, low, high, criteria, order);
+        int pivotIndexToUse = choose_pivot_index(deportistas, low, high, criteria, pivotType);
 
-        quick_sort_recursive(deportistas, low, pivotIndex - 1, criteria, order);
+        swap_deportistas( &deportistas[pivotIndexToUse], &deportistas[high] );
 
-        quick_sort_recursive(deportistas, pivotIndex + 1, high, criteria, order);
+        int pivotIndex = partition_lomuto( deportistas, low, high, criteria, order );
+
+        quick_sort_recursive( deportistas, low, pivotIndex - 1, criteria, order, pivotType );
+
+        quick_sort_recursive( deportistas, pivotIndex + 1, high, criteria, order, pivotType );
     }
 }
 
@@ -83,13 +137,12 @@ static void quick_sort_recursive(Deportista *deportistas, int low, int high, Sor
  */
 void quick_sort_deportistas(Deportista *deportistas, int count, SortCriteria criteria, SortOrder order, PivotType pivotType)
 {
-    (void)pivotType; //momentaneo
-
+    
     if(deportistas == NULL || count < 2) {
         return;
     }
 
-    quick_sort_recursive(deportistas, 0, count - 1, criteria, order);
+    quick_sort_recursive( deportistas, 0, count - 1, criteria, order, pivotType );
 }
 
 /**

@@ -6,6 +6,7 @@ build/
 
 # Editor/workspace
 .vscode/
+db/
 
 # LaTeX intermediate files generated in docs
 *.aux

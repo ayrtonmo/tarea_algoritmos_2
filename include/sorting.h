@@ -35,7 +35,8 @@ typedef enum {
     INSERTION_SORT = 1,        /**< Insertion sort. */
     BUBBLE_SORT = 2,           /**< Bubble sort optimizado. */
     SELECTION_SORT = 3,        /**< Selection sort optimizado. */
-    COCKTAIL_SHAKER_SORT = 4   /**< Cocktail shaker sort. */
+    COCKTAIL_SHAKER_SORT = 4,   /**< Cocktail shaker sort. */
+    QUICK_SORT = 5             /**< Quick sort. */
 } SortAlgorithm;
 
 /**
@@ -54,6 +55,17 @@ typedef enum {
     SEARCH_BY_ID = 1 /**< Buscar por ID. */
 } SearchCriteria;
 
+/**
+ * @brief Tipos de pivote disponibles para la busqueda.
+ */
+typedef enum {
+    PIVOT_LAST = 1,
+    PIVOT_FIRST = 2,
+    PIVOT_RANDOM = 3,
+    PIVOT_MEDIAN_OF_THREE = 4
+} PivotType;
+
 int compare_by_criteria(Deportista left, Deportista right, SortCriteria criteria);
+void quick_sort_deportistas(Deportista *deportistas, int count, SortCriteria criteria, SortOrder order, PivotType pivotType);
 
 #endif

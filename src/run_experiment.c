@@ -51,7 +51,11 @@ static SortAlgorithm ask_sort_algorithm(void)
         system("clear");
 
         printf(BOLD BLUE "=== Algoritmo de ordenamiento ===\n" NORMAL);
-
+        printf(" 1.- Insertion sort\n");
+        printf(" 2.- Bubble sort\n");
+        printf(" 3.- Selection sort\n");
+        printf(" 4.- Cocktail shaker sort\n");
+        printf(" 5.- Quick sort\n\n");
         printf(BOLD "Opcion: " NORMAL);
 
 
@@ -61,8 +65,8 @@ static SortAlgorithm ask_sort_algorithm(void)
 
         selected = atoi(option);
     }
-    //while(selected < INSERTION_SORT || selected > COCKTAIL_SHAKER_SORT);
-    while (1); // cambiar despues
+    while(selected < INSERTION_SORT || selected > QUICK_SORT);
+    //while (1);
 
     return (SortAlgorithm)selected;
 }
@@ -111,14 +115,27 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
     SortAlgorithm algorithmOption = ask_sort_algorithm();
     int count = 0;
 
-    // Cambiar al mejor segun nosotros despues
+    if(!load_data(&deportistas, &count)) {
+        return;
+    }
 
     // Poner un switch con cada algoritmo y dentro de cada caso cargar datos, ordenar, imprimir resultado y liberar memoria
     switch(algorithmOption) {
+        case QUICK_SORT:
+            quick_sort_deportistas(deportistas, count, criteria, order, PIVOT_LAST);
+            break;
         default:
             print_error(ERROR_NOT_IMPLEMENTED, NULL);
             break;
     }
+
+    if(rankingAmount > count) {
+        rankingAmount = count;
+    }
+
+    print_deportistas_array(deportistas, rankingAmount);
+    free_deportistas_array(deportistas, count);
+
 }
 
 /**

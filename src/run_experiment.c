@@ -81,6 +81,9 @@ static SearchAlgorithm ask_search_algorithm(void)
         system("clear");
 
         printf(BOLD BLUE "=== Algoritmo de busqueda ===\n" NORMAL);
+        printf(" 1.- Busqueda secuencial\n");
+        printf(" 2.- Busqueda binaria recursiva\n");
+        printf(" 3.- Busqueda exponencial\n\n");
         printf(BOLD "Opcion: " NORMAL);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
@@ -89,8 +92,8 @@ static SearchAlgorithm ask_search_algorithm(void)
 
         selected = atoi(option);
     }
-    //while(selected < SEQUENTIAL_SEARCH || selected > BINARY_SEARCH);
-    while(1); // cambiar despues
+    while(selected < SEQUENTIAL_SEARCH || selected > EXPONENTIAL_SEARCH);
+    //while(1);
 
     return (SearchAlgorithm)selected;
 }
@@ -128,21 +131,46 @@ void search_by_id(int targetId)
     Deportista *deportistas = NULL;
     SearchAlgorithm algorithmOption;
     int count = 0;
-    int index;
+    int index = -1;
     char detail[32];
 
-    // Cambiar al mejor segun nosotros despues
-
     algorithmOption = ask_search_algorithm();
+    if(!load_data(&deportistas, &count)) {
+        return;
+    }
 
-    // Poner un switch con cada algoritmo y dentro de cada caso cargar datos, buscar, imprimir resultado y liberar memoria
     switch(algorithmOption) {
+        case EXPONENTIAL_SEARCH:
+            sort_deportistas_by_id_ascending(deportistas, count);
+            index = exponential_search_by_id(deportistas, count, targetId);
+            break;
+
+        case BINARY_SEARCH:
+            sort_deportistas_by_id_ascending(deportistas, count);
+            index = binary_search_by_id_recursive(
+                deportistas,
+                0,
+                count - 1,
+                targetId
+            );
+            break;
+
+        case SEQUENTIAL_SEARCH:
         default:
             print_error(ERROR_NOT_IMPLEMENTED, NULL);
-            break;
+            free_deportistas_array(deportistas, count);
+            return;
     }
-}
 
+    if(index == -1) {
+        snprintf(detail, sizeof(detail), "%d", targetId);
+        print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
+    } else {
+        print_deportista(deportistas[index]);
+    }
+
+    free_deportistas_array(deportistas, count);
+}
 /**
  * @brief Muestra el ranking de los mejores N deportistas segun puntaje.
  *

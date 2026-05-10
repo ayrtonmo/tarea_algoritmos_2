@@ -43,7 +43,8 @@ typedef enum {
  */
 typedef enum {
     SEQUENTIAL_SEARCH = 1, /**< Busqueda secuencial. */
-    BINARY_SEARCH = 2      /**< Busqueda binaria (requiere arreglo ordenado). */
+    BINARY_SEARCH = 2,      /**< Busqueda binaria (requiere arreglo ordenado). */
+    EXPONENTIAL_SEARCH = 3 /**< Busqueda exponencial (requiere arreglo ordenado). */
 } SearchAlgorithm;
 
 /**
@@ -52,5 +53,7 @@ typedef enum {
 typedef enum {
     SEARCH_BY_ID = 1 /**< Buscar por ID. */
 } SearchCriteria;
+
+int compare_by_criteria(Deportista left, Deportista right, SortCriteria criteria);
 
 #endif

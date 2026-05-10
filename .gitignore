@@ -1,0 +1,22 @@
+# Build artifacts
+obj/
+build/
+*.o
+*.out
+
+# Editor/workspace
+.vscode/
+
+# LaTeX intermediate files generated in docs
+*.aux
+*.lof
+*.log
+*.toc
+*.bbl
+*.bcf
+*.fdb_latexmk
+*.synctex.gz
+*.run.xml
+*.fls
+*.blg
+docs/doxygen/latex/

@@ -69,7 +69,7 @@ void print_deportista(Deportista deportista)
 
 /**
  * @brief Intercambia los datos de dos deportistas.
- * 
+ *
  * @param left Deportista izquierdo a intercambiar.
  * @param right Deportista derecho a intercambiar.
  */

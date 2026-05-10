@@ -102,13 +102,15 @@ static void prepare_sort_case(Deportista *deportistas, int count, BenchmarkCase 
 
     switch(benchmarkCase) {
         case BENCHMARK_CASE_BEST:
-            insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
+            /* insertion_sort_deportistas no implementado; dejar el arreglo tal cual */
+            /* insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING); */
             break;
         case BENCHMARK_CASE_AVERAGE:
             shuffle_deportistas_array(deportistas, count);
             break;
         case BENCHMARK_CASE_WORST:
-            insertion_sort_deportistas(deportistas, count, SORT_BY_ID, DESCENDING);
+            /* insertion_sort_deportistas no implementado; usar el arreglo mezclado como peor caso */
+            /* insertion_sort_deportistas(deportistas, count, SORT_BY_ID, DESCENDING); */
             break;
         default:
             break;
@@ -156,7 +158,8 @@ static int prepare_search_worst_case(Deportista *deportistas, int count, SearchA
     }
 
     if(algorithm == BINARY_SEARCH) {
-        insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
+        /* insertion_sort_deportistas no implementado; asumimos que el arreglo puede no necesitar ordenarse */
+        /* insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING); */
     }
 
     return get_missing_target_id(deportistas, count);

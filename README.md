@@ -1,5 +1,5 @@
 # Autores
-- Ivan Gallardo
-- Pablo Gomez
+- Iván Gallardo
+- Pablo Gómez
 - Ayrton Morrison
 

@@ -42,12 +42,12 @@ static int choose_pivot_index(Deportista *deportistas, int low, int high, SortCr
             int middleLast = compare_by_criteria(middle, last, criteria);
 
             if((firstMiddle >= 0 && firstLast <= 0) ||
-               (firstMiddle <= 0 && firstLast >= 0)) {
+                (firstMiddle <= 0 && firstLast >= 0)) {
                 return low;
             }
 
             if((firstMiddle <= 0 && middleLast >= 0) ||
-               (firstMiddle >= 0 && middleLast <= 0)) {
+                (firstMiddle >= 0 && middleLast <= 0)) {
                 return mid;
             }
 
@@ -126,7 +126,7 @@ static void quick_sort_recursive(Deportista *deportistas, int low, int high, Sor
  * @brief Aplica Quick Select de forma recursiva sobre un rango del arreglo.
  *
  * TODO: explicar brevemente maybe?
- * 
+ *
  * @param deportistas Arreglo de deportistas.
  * @param low Indice inicial del rango actual.
  * @param high Indice final del rango actual.
@@ -168,7 +168,7 @@ static int quick_select_recursive(Deportista *deportistas, int low, int high, in
  *
  * El parametro k se interpreta desde 1. Por ejemplo, k = 1 representa el
  * mejor deportista si se usa SORT_BY_PUNTAJE con orden DESCENDING.
- * 
+ *
  * @param deportistas Arreglo de deportistas.
  * @param count Cantidad de deportistas almacenados en el arreglo.
  * @param k Posicion buscada, comenzando desde 1.
@@ -214,13 +214,62 @@ Deportista quick_select_deportista( Deportista *deportistas, int count, int k, S
  */
 void quick_sort_deportistas(Deportista *deportistas, int count, SortCriteria criteria, SortOrder order, PivotType pivotType)
 {
-    
     if(deportistas == NULL || count < 2) {
         return;
     }
 
     quick_sort_recursive( deportistas, 0, count - 1, criteria, order, pivotType );
 }
+
+
+void merge_sort(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order, Deportista *temp)
+{
+    if(deportistas == NULL || temp == NULL || low >= high) {
+        return;
+    }
+
+    int mid = low + (high - low) / 2;
+    // Izquierda
+    merge_sort(deportistas, low, mid, criteria, order, temp);
+    // Derecha
+    merge_sort(deportistas, mid + 1, high, criteria, order, temp);
+
+    merge(deportistas, low, mid, high, criteria, order, temp);
+
+}
+
+void merge(Deportista *deportistas, int low, int mid, int high, SortCriteria criteria, SortOrder order, Deportista *temp)
+{
+    int leftIndex = low;
+    int rightIndex = mid + 1;
+    int tempIndex = low;
+
+    while(leftIndex <= mid && rightIndex <= high) {
+        int comparison = compare_by_criteria(deportistas[leftIndex], deportistas[rightIndex], criteria);
+        int takeLeft = (order == ASCENDING && comparison <= 0) || (order == DESCENDING && comparison >= 0);
+
+        if(takeLeft) {
+            temp[tempIndex++] = deportistas[leftIndex++];
+        }
+        else {
+            temp[tempIndex++] = deportistas[rightIndex++];
+        }
+    }
+
+    while(leftIndex <= mid) {
+        temp[tempIndex++] = deportistas[leftIndex++];
+    }
+
+    while(rightIndex <= high) {
+        temp[tempIndex++] = deportistas[rightIndex++];
+    }
+
+    for(int i = low; i <= high; i++) {
+        deportistas[i] = temp[i];
+    }
+
+}
+
 
 /**
  * @brief Compara dos deportistas segun un criterio de ordenamiento.
@@ -280,3 +329,5 @@ int compare_by_criteria(Deportista left, Deportista right, SortCriteria criteria
             return 0;
     }
 }
+
+

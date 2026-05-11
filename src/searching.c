@@ -24,9 +24,9 @@ void sort_deportistas_by_id_ascending(Deportista *deportistas, int count)
 		Deportista current = deportistas[i];
 		int j = i - 1;
 
-		while( j >= 0 &&deportistas[j] != NULL && 
-			   current != NULL && 
-			   compare_by_criteria(deportistas[j], current, SORT_BY_ID) > 0) {
+		while( j >= 0 &&deportistas[j] != NULL &&
+			current != NULL &&
+			compare_by_criteria(deportistas[j], current, SORT_BY_ID) > 0) {
 			deportistas[j + 1] = deportistas[j];
 			j--;
 		}
@@ -92,18 +92,14 @@ int interpolation_search_by_id(Deportista* deportistas, int count)
 	if(deportistas == NULL || count <= 0 || deportistas[0] == NULL) {
 		return -1;
 	}
-
-	
-
-
 }
 
 /**
  * @brief Realiza una busqueda exponencial por ID.
  *
  * Revisa si el elemento buscado se encuentra en la primera posicion. Si no es asi, aumenta
- * el limite superior de busqueda de forma exponencial, duplicando el valor de bound hasta 
- * encontrar un rango donde podria estar el ID buscado. Se aplica b. binaria recursiva dentro 
+ * el limite superior de busqueda de forma exponencial, duplicando el valor de bound hasta
+ * encontrar un rango donde podria estar el ID buscado. Se aplica b. binaria recursiva dentro
  * del rango encontrado.
  *
  * Requiere que el arreglo haya sido ordenado previamente por ID ascendente.

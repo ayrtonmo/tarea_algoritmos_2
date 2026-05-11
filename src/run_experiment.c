@@ -55,7 +55,8 @@ static SortAlgorithm ask_sort_algorithm(void)
         printf(" 2.- Bubble sort\n");
         printf(" 3.- Selection sort\n");
         printf(" 4.- Cocktail shaker sort\n");
-        printf(" 5.- Quick sort\n\n");
+        printf(" 5.- Quick sort\n");
+        printf(" 6.- Merge sort\n");
         printf(BOLD "Opcion: " NORMAL);
 
 
@@ -65,7 +66,7 @@ static SortAlgorithm ask_sort_algorithm(void)
 
         selected = atoi(option);
     }
-    while(selected < INSERTION_SORT || selected > QUICK_SORT);
+    while(selected < INSERTION_SORT || selected > MERGE_SORT);
     //while (1);
 
     return (SortAlgorithm)selected;
@@ -153,10 +154,28 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
     // Poner un switch con cada algoritmo y dentro de cada caso cargar datos, ordenar, imprimir resultado y liberar memoria
     switch(algorithmOption) {
         case QUICK_SORT:
+        {
             PivotType pivotType = ask_quick_sort_pivot();
 
             quick_sort_deportistas(deportistas, count, criteria, order, pivotType);
             break;
+        }
+
+        case MERGE_SORT:
+        {
+            Deportista *temp = malloc(sizeof(Deportista) * count);
+
+            if(temp == NULL) {
+                print_error(ERROR_MEMORY_ALLOCATION_FAILED, NULL);
+                free_deportistas_array(deportistas, count);
+                return;
+            }
+
+            merge_sort(deportistas, 0, count - 1, criteria, order, temp);
+            free(temp);
+            break;
+        }
+
         default:
             print_error(ERROR_NOT_IMPLEMENTED, NULL);
             break;

@@ -37,7 +37,8 @@ typedef enum {
     BUBBLE_SORT = 2,           /**< Bubble sort optimizado. */
     SELECTION_SORT = 3,        /**< Selection sort optimizado. */
     COCKTAIL_SHAKER_SORT = 4,   /**< Cocktail shaker sort. */
-    QUICK_SORT = 5             /**< Quick sort. */
+    QUICK_SORT = 5,            /**< Quick sort. */
+    MERGE_SORT = 6             /**< Merge sort recursivo. */
 } SortAlgorithm;
 
 /**
@@ -69,5 +70,8 @@ typedef enum {
 int compare_by_criteria(Deportista left, Deportista right, SortCriteria criteria);
 void quick_sort_deportistas(Deportista *deportistas, int count, SortCriteria criteria, SortOrder order, PivotType pivotType);
 Deportista quick_select_deportista(Deportista *deportistas, int count, int k, SortCriteria criteria, SortOrder order, PivotType pivotType);
+void merge_sort(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order, Deportista *temp);
+void merge(Deportista *deportistas, int low, int mid, int high, SortCriteria criteria, SortOrder order, Deportista *temp);
+
 
 #endif

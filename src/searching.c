@@ -81,6 +81,23 @@ int binary_search_by_id_recursive(Deportista *deportistas,int left,int right,int
 	);
 }
 
+int interpolation_search_by_id_with_indexs(Deportista* deportistas, int start, int end)
+{
+
+
+}
+
+int interpolation_search_by_id(Deportista* deportistas, int count)
+{
+	if(deportistas == NULL || count <= 0 || deportistas[0] == NULL) {
+		return -1;
+	}
+
+	
+
+
+}
+
 /**
  * @brief Realiza una busqueda exponencial por ID.
  *

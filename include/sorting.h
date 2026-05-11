@@ -72,6 +72,6 @@ void quick_sort_deportistas(Deportista *deportistas, int count, SortCriteria cri
 Deportista quick_select_deportista(Deportista *deportistas, int count, int k, SortCriteria criteria, SortOrder order, PivotType pivotType);
 void merge_sort(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order, Deportista *temp);
 void merge(Deportista *deportistas, int low, int mid, int high, SortCriteria criteria, SortOrder order, Deportista *temp);
-
+void insertion_sort_deportistas(Deportista *deportistas, int length, SortCriteria criteria, SortOrder order);
 
 #endif

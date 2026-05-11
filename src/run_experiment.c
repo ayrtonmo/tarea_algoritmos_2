@@ -104,6 +104,63 @@ static PivotType ask_quick_sort_pivot(void)
 }
 
 /**
+ * @brief Pregunta que variante de merge sort usar.
+ *
+ * @return int 1 para merge clasico, 2 para merge con insertion.
+ */
+static int ask_merge_sort_variant(void)
+{
+    char option[16];
+    int selected;
+
+    do {
+        system("clear");
+
+        printf(BOLD BLUE "=== Variante de Merge Sort ===\n" NORMAL);
+        printf(" 1.- Merge clasico\n");
+        printf(" 2.- Merge con insertion\n\n");
+        printf(BOLD "Opcion: " NORMAL);
+
+        if(fgets(option, sizeof(option), stdin) == NULL) {
+            return 1;
+        }
+
+        selected = atoi(option);
+    }
+    while(selected < 1 || selected > 2);
+
+    return selected;
+}
+
+/**
+ * @brief Pregunta el threshold para merge sort optimizado.
+ *
+ * @return int Umbral positivo para activar insertion sort en subarreglos pequenos.
+ */
+static int ask_merge_insertion_threshold(void)
+{
+    char option[16];
+    int selected;
+
+    do {
+        system("clear");
+
+        printf(BOLD BLUE "=== Threshold de Merge Insertion ===\n" NORMAL);
+        printf("Ingresa el tamano maximo del subarreglo para usar insertion sort\n\n");
+        printf(BOLD "Opcion: " NORMAL);
+
+        if(fgets(option, sizeof(option), stdin) == NULL) {
+            return 16;
+        }
+
+        selected = atoi(option);
+    }
+    while(selected < 1);
+
+    return selected;
+}
+
+/**
  * @brief Pregunta que busqueda usar.
  *
  * @return SearchAlgorithm Opcion seleccionada.
@@ -164,6 +221,7 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
         case MERGE_SORT:
         {
             Deportista *temp = malloc(sizeof(Deportista) * count);
+            int mergeVariant = ask_merge_sort_variant();
 
             if(temp == NULL) {
                 print_error(ERROR_MEMORY_ALLOCATION_FAILED, NULL);
@@ -171,7 +229,13 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
                 return;
             }
 
-            merge_sort(deportistas, 0, count - 1, criteria, order, temp);
+            if(mergeVariant == 1) {
+                merge_sort(deportistas, 0, count - 1, criteria, order, temp);
+            } else {
+                int threshold = ask_merge_insertion_threshold();
+                merge_insertion(deportistas, 0, count - 1, criteria, order, threshold, temp);
+            }
+
             free(temp);
             break;
         }

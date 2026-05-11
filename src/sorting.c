@@ -96,6 +96,39 @@ static int partition_lomuto(Deportista *deportistas, int low, int high, SortCrit
 }
 
 /**
+ * @brief Ordena un rango del arreglo usando insertion sort.
+ *
+ * Se utiliza como caso base del merge sort optimizado para subarreglos pequeños.
+ *
+ * @param deportistas Arreglo de deportistas a ordenar.
+ * @param low Indice inicial del rango.
+ * @param high Indice final del rango.
+ * @param criteria Criterio de ordenamiento utilizado para comparar deportistas.
+ * @param order Orden de ordenamiento, ascendente o descendente.
+ */
+static void insertion_sort_range(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order)
+{
+    for(int i = low + 1; i <= high; i++) {
+        Deportista key = deportistas[i];
+        int j = i - 1;
+
+        while(j >= low) {
+            int cmp = compare_by_criteria(deportistas[j], key, criteria);
+            int shouldShift = (order == ASCENDING && cmp > 0) || (order == DESCENDING && cmp < 0);
+
+            if(!shouldShift) {
+                break;
+            }
+
+            deportistas[j + 1] = deportistas[j];
+            j--;
+        }
+
+        deportistas[j + 1] = key;
+    }
+}
+
+/**
  * @brief Aplica Quick Sort de forma recursiva sobre un rango del arreglo.
  *
  * Divide el arreglo usando la particion de Lomuto y luego ordena
@@ -236,6 +269,25 @@ void merge_sort(Deportista *deportistas, int low, int high, SortCriteria criteri
 
     merge(deportistas, low, mid, high, criteria, order, temp);
 
+}
+
+void merge_insertion(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order, int threshold, Deportista *temp)
+{
+    if(deportistas == NULL || temp == NULL || low >= high) {
+        return;
+    }
+
+    if(threshold > 0 && (high - low + 1) <= threshold) {
+        insertion_sort_range(deportistas, low, high, criteria, order);
+        return;
+    }
+
+    int mid = low + (high - low) / 2;
+
+    merge_insertion(deportistas, low, mid, criteria, order, threshold, temp);
+    merge_insertion(deportistas, mid + 1, high, criteria, order, threshold, temp);
+
+    merge(deportistas, low, mid, high, criteria, order, temp);
 }
 
 void merge(Deportista *deportistas, int low, int mid, int high, SortCriteria criteria, SortOrder order, Deportista *temp)

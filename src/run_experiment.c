@@ -176,7 +176,8 @@ static SearchAlgorithm ask_search_algorithm(void)
         printf(BOLD BLUE "=== Algoritmo de busqueda ===\n" NORMAL);
         printf(" 1.- Busqueda secuencial\n");
         printf(" 2.- Busqueda binaria recursiva\n");
-        printf(" 3.- Busqueda exponencial\n\n");
+        printf(" 3.- Busqueda exponencial\n");
+        printf(" 4.- Busqueda por interpolación\n\n");
         printf(BOLD "Opcion: " NORMAL);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
@@ -185,7 +186,7 @@ static SearchAlgorithm ask_search_algorithm(void)
 
         selected = atoi(option);
     }
-    while(selected < SEQUENTIAL_SEARCH || selected > EXPONENTIAL_SEARCH);
+    while(selected < SEQUENTIAL_SEARCH || selected > INTERPOLATION_SEARCH);
     //while(1);
 
     return (SearchAlgorithm)selected;
@@ -273,6 +274,11 @@ void search_by_id(int targetId)
     }
 
     switch(algorithmOption) {
+        case INTERPOLATION_SEARCH:
+            sort_deportistas_by_id_ascending(deportistas, count);
+            index = interpolation_search_by_id(deportistas, count, targetId);
+            break;
+
         case EXPONENTIAL_SEARCH:
             sort_deportistas_by_id_ascending(deportistas, count);
             index = exponential_search_by_id(deportistas, count, targetId);

@@ -192,6 +192,138 @@ static SearchAlgorithm ask_search_algorithm(void)
 }
 
 /**
+ * @brief Pregunta el tipo de busqueda interactiva a realizar.
+ *
+ * @return int 1=ID, 2=Puntaje exacto, 3=Rango de puntaje
+ */
+static int ask_search_type(void)
+{
+    char option[16];
+    int selected;
+
+    do {
+        system("clear");
+
+        printf(BOLD BLUE "=== Tipo de busqueda ===\n" NORMAL);
+        printf(" 1.- Buscar por ID\n");
+        printf(" 2.- Buscar por puntaje exacto\n");
+        printf(" 3.- Buscar por rango de puntaje\n\n");
+        printf(BOLD "Opcion: " NORMAL);
+
+        if(fgets(option, sizeof(option), stdin) == NULL) {
+            return 1;
+        }
+
+        selected = atoi(option);
+    }
+    while(selected < 1 || selected > 3);
+
+    return selected;
+}
+
+static void run_search_interactive(void)
+{
+    Deportista *deportistas = NULL;
+    int count = 0;
+    int type = ask_search_type();
+
+    if(!load_data(&deportistas, &count)) {
+        return;
+    }
+
+    if(type == 1) {
+        char input[32];
+        int targetId;
+
+        printf(BOLD "Ingrese ID: " NORMAL);
+        if(fgets(input, sizeof(input), stdin) == NULL) {
+            free_deportistas_array(deportistas, count);
+            return;
+        }
+
+        targetId = atoi(input);
+
+        sort_deportistas_by_id_ascending(deportistas, count);
+
+        int index = binary_search_by_id_recursive(deportistas, 0, count - 1, targetId);
+
+        if(index == -1) {
+            char detail[32];
+            snprintf(detail, sizeof(detail), "%d", targetId);
+            print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
+        } else {
+            print_deportista(deportistas[index]);
+        }
+
+        free_deportistas_array(deportistas, count);
+        return;
+    }
+
+    if(type == 2) {
+        char input[64];
+        float targetScore;
+
+        printf(BOLD "Ingrese puntaje (float): " NORMAL);
+        if(fgets(input, sizeof(input), stdin) == NULL) {
+            free_deportistas_array(deportistas, count);
+            return;
+        }
+
+        targetScore = strtof(input, NULL);
+
+        insertion_sort_deportistas(deportistas, count, SORT_BY_PUNTAJE, ASCENDING);
+
+        int index = binary_search_by_score(deportistas, 0, count - 1, targetScore);
+
+        if(index == -1) {
+            char detail[64];
+            snprintf(detail, sizeof(detail), "%.2f", targetScore);
+            print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
+        } else {
+            print_deportista(deportistas[index]);
+        }
+
+        free_deportistas_array(deportistas, count);
+        return;
+    }
+
+    /* type == 3: rango */
+    {
+        char input[64];
+        float lowScore, highScore;
+        int outLeft = -1, outRight = -1;
+
+        printf(BOLD "Ingrese puntaje minimo: " NORMAL);
+        if(fgets(input, sizeof(input), stdin) == NULL) {
+            free_deportistas_array(deportistas, count);
+            return;
+        }
+        lowScore = strtof(input, NULL);
+
+        printf(BOLD "Ingrese puntaje maximo: " NORMAL);
+        if(fgets(input, sizeof(input), stdin) == NULL) {
+            free_deportistas_array(deportistas, count);
+            return;
+        }
+        highScore = strtof(input, NULL);
+
+        int found = binary_search_by_range(deportistas, count, lowScore, highScore, &outLeft, &outRight);
+
+        if(found <= 0) {
+            printf("No se encontraron deportistas en el rango %.2f - %.2f\n", lowScore, highScore);
+        } else {
+            printf(BOLD BLUE "\n=== Se encontraron %d deportistas en el rango ===\n" NORMAL, found);
+            for(int i = outLeft; i <= outRight; i++) {
+                print_deportista(deportistas[i]);
+            }
+        }
+
+        free_deportistas_array(deportistas, count);
+        return;
+    }
+}
+
+/**
  * @brief Ejecuta una operacion de ordenamiento o ranking.
  *
  * @param criteria Campo por el cual se ordena.
@@ -375,7 +507,7 @@ void print_help(const char *programName)
     printf("Uso: %s [opciones]\n", programName);
     printf("  -h                 Muestra esta ayuda\n");
     printf("  -g [cantidad]      Genera datos aleatorios\n");
-    printf("  -t                 Ejecuta el flujo interactivo de ordenamiento\n");
+    printf("  -t                 Ejecuta el flujo interactivo (ordenamiento y busqueda)\n");
     printf("  -id [valor]        Busca un deportista por ID\n");
     printf("  -r [cantidad]      Muestra el top N por puntaje\n");
     printf("  -k [posicion]      Muestra el k-esimo mejor deportista por puntaje\n");
@@ -445,12 +577,35 @@ static SortOrder ask_sort_order(void)
 }
 
 /**
- * @brief Ejecuta el flujo interactivo de ordenamiento.
+ * @brief Ejecuta el flujo interactivo de ordenamiento y busqueda.
  */
 void run_experiment(void)
 {
-    SortCriteria criteria = ask_sort_criteria();
-    SortOrder order = ask_sort_order();
+    char option[16];
+    int selected;
 
-    run_sort_operation(criteria, MAX_DATA, order);
+    do {
+        system("clear");
+
+        printf(BOLD BLUE "=== Menu principal ===\n" NORMAL);
+        printf(" 1.- Ordenamiento\n");
+        printf(" 2.- Busqueda (ID, puntaje exacto, rango)\n\n");
+        printf(BOLD "Opcion: " NORMAL);
+
+        if(fgets(option, sizeof(option), stdin) == NULL) {
+            return;
+        }
+
+        selected = atoi(option);
+    }
+    while(selected < 1 || selected > 2);
+
+    if(selected == 1) {
+        SortCriteria criteria = ask_sort_criteria();
+        SortOrder order = ask_sort_order();
+
+        run_sort_operation(criteria, MAX_DATA, order);
+    } else {
+        run_search_interactive();
+    }
 }

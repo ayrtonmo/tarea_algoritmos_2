@@ -6,6 +6,8 @@
 #include "searching.h"
 #include "sorting.h"
 
+#include <math.h>
+
 /**
  * @brief Ordena un arreglo de deportistas por ID de forma ascendente con insertion sort.
  *
@@ -79,6 +81,113 @@ int binary_search_by_id_recursive(Deportista *deportistas,int left,int right,int
 		mid - 1,
 		targetId
 	);
+}
+
+/**
+ * @brief Busca recursivamente un puntaje exacto en un arreglo ordenado por puntaje ascendente.
+ *
+ * @param deportistas Arreglo ordenado por puntaje ascendente.
+ * @param left Indice izquierdo del rango.
+ * @param right Indice derecho del rango.
+ * @param targetScore Puntaje a buscar.
+ * @return Indice donde se encuentra un elemento con puntaje == targetScore, -1 si no existe.
+ */
+int binary_search_by_score(Deportista *deportistas, int left, int right, float targetScore)
+{
+	if(deportistas == NULL || left > right) {
+		return -1;
+	}
+
+	int mid = left + (right - left) / 2;
+
+	if(deportistas[mid] == NULL) {
+		return -1;
+	}
+
+	if(deportistas[mid]->puntaje == targetScore) {
+		return mid;
+	}
+
+	if(deportistas[mid]->puntaje < targetScore) {
+		return binary_search_by_score(deportistas, mid + 1, right, targetScore);
+	}
+
+	return binary_search_by_score(deportistas, left, mid - 1, targetScore);
+}
+
+
+/**
+ * @brief Busca recursivamente un puntaje exacto en un arreglo ordenado por puntaje ascendente.
+ *
+ * @param deportistas Arreglo ordenado por puntaje ascendente.
+ * @param left Indice izquierdo del rango.
+ * @param right Indice derecho del rango.
+ * @param tagetId ID a buscar.
+ * @return Indice donde se encuentra un elemento con puntaje == targetScore, -1 si no existe.
+ */
+int binary_search_by_id(Deportista *deportistas, int left, int right, int targetId)
+{
+	if(deportistas == NULL || left > right) {
+		return -1;
+	}
+
+	int mid = left + (right - left) / 2;
+
+	if(deportistas[mid] == NULL) {
+		return -1;
+	}
+
+	if(deportistas[mid]->id == targetId) {
+		return mid;
+	}
+
+	if(deportistas[mid]->id < targetId) {
+		return binary_search_by_id(deportistas, mid + 1, right, targetId);
+	}
+
+	return binary_search_by_id(deportistas, left, mid - 1, targetId);
+}
+
+
+/**
+ * @brief Busca un rango de deportistas cuyo puntaje este entre lowScore y highScore.
+ *
+ * El arreglo es ordenado por puntaje ascendente usando insertion_sort_deportistas
+ * antes de aplicar las busquedas binarias modificadas.
+ *
+ * @param deportistas Arreglo de deportistas (modificado por la ordenacion).
+ * @param count Cantidad de elementos.
+ * @param lowScore Limite inferior inclusive.
+ * @param highScore Limite superior inclusive.
+ * @param outLeft Direccion donde se escribe el indice del primer elemento encontrado (o -1).
+ * @param outRight Direccion donde se escribe el indice del ultimo elemento encontrado (o -1).
+ * @return Cantidad de elementos en el rango.
+ */
+int binary_search_by_range(Deportista *deportistas, int count, float lowScore, float highScore, int *outLeft, int *outRight)
+{
+	if(deportistas == NULL || count <= 0 || outLeft == NULL || outRight == NULL) {
+		return 0;
+	}
+
+	if(lowScore > highScore) {
+		int tmp = (int)lowScore; lowScore = highScore; highScore = tmp;
+	}
+
+	insertion_sort_deportistas(deportistas, count, SORT_BY_PUNTAJE, ASCENDING);
+
+	int leftIndex = binary_search_by_score(deportistas, 0, count - 1, lowScore);
+	int rightIndex = binary_search_by_score(deportistas, 0, count - 1, highScore);
+
+	if(leftIndex == -1 || rightIndex == -1 || leftIndex > rightIndex) {
+		*outLeft = -1;
+		*outRight = -1;
+		return 0;
+	}
+
+	*outLeft = leftIndex;
+	*outRight = rightIndex;
+
+	return (rightIndex - leftIndex + 1);
 }
 
 int interpolation_search_by_id_with_indexs(Deportista* deportistas, int start, int end)

@@ -19,7 +19,8 @@ set key autotitle columnhead
 searchFile = 'db/search_benchmark.csv'
 sortFile   = 'db/sort_benchmark.csv'
 
-searchOut      = 'plots/search_worst_benchmark.pdf'
+searchAverageOut   = 'plots/search_average_benchmark.pdf'
+searchWorstOut     = 'plots/search_worst_benchmark.pdf'
 sortBestOut    = 'plots/sort_best_benchmark.pdf'
 sortAverageOut = 'plots/sort_average_benchmark.pdf'
 sortWorstOut   = 'plots/sort_worst_benchmark.pdf'
@@ -41,17 +42,33 @@ set xtics
 set ytics
 set key outside
 
-# Search benchmark: peor caso
-set output searchOut
-set title 'Search benchmark - peor caso'
+# Search benchmark: caso promedio
+set output searchAverageOut
+set title 'Search benchmark - caso promedio'
+set logscale y
 columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", searchFile)))
-if (columnCount < 4) {
+if (columnCount < 7) {
 	print sprintf("ERROR: CSV invalido (pocas columnas): %s", searchFile)
 	exit 1
 } else {
 	plot for [col=2:4] searchFile using 1:col lw 4 title columnhead(col)
 }
 unset output
+unset logscale y
+
+# Search benchmark: peor caso
+set output searchWorstOut
+set title 'Search benchmark - peor caso'
+set logscale y
+columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", searchFile)))
+if (columnCount < 7) {
+	print sprintf("ERROR: CSV invalido (pocas columnas): %s", searchFile)
+	exit 1
+} else {
+	plot for [col=5:7] searchFile using 1:col lw 4 title columnhead(col)
+}
+unset output
+unset logscale y
 
 # Sort benchmark: mejor caso
 set output sortBestOut

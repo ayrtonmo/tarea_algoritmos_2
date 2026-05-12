@@ -45,11 +45,11 @@ set key outside
 set output searchOut
 set title 'Search benchmark - peor caso'
 columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", searchFile)))
-if (columnCount < 3) {
+if (columnCount < 4) {
 	print sprintf("ERROR: CSV invalido (pocas columnas): %s", searchFile)
 	exit 1
 } else {
-	plot for [col=2:3] searchFile using 1:col lw 4 title columnhead(col)
+	plot for [col=2:4] searchFile using 1:col lw 4 title columnhead(col)
 }
 unset output
 
@@ -58,11 +58,11 @@ set output sortBestOut
 set title 'Sort benchmark - mejor caso'
 set logscale y
 columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", sortFile)))
-if (columnCount < 13) {
+if (columnCount < 19) {
 	print sprintf("ERROR: CSV invalido (pocas columnas): %s", sortFile)
 	exit 1
 } else {
-	plot for [col=2:5] sortFile using 1:col lw 4 title columnhead(col)
+	plot for [col=2:7] sortFile using 1:col lw 4 title columnhead(col)
 }
 unset output
 unset logscale y
@@ -70,21 +70,21 @@ unset logscale y
 # Sort benchmark: caso promedio
 set output sortAverageOut
 set title 'Sort benchmark - caso promedio'
-if (columnCount < 13) {
+if (columnCount < 19) {
 	print sprintf("ERROR: CSV invalido (pocas columnas): %s", sortFile)
 	exit 1
 } else {
-	plot for [col=6:9] sortFile using 1:col lw 4 title columnhead(col)
+	plot for [col=8:13] sortFile using 1:col lw 4 title columnhead(col)
 }
 unset output
 
 # Sort benchmark: peor caso
 set output sortWorstOut
 set title 'Sort benchmark - peor caso'
-if (columnCount < 13) {
+if (columnCount < 19) {
 	print sprintf("ERROR: CSV invalido (pocas columnas): %s", sortFile)
 	exit 1
 } else {
-	plot for [col=10:13] sortFile using 1:col lw 4 title columnhead(col)
+	plot for [col=14:19] sortFile using 1:col lw 4 title columnhead(col)
 }
 unset output

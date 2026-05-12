@@ -162,6 +162,20 @@ int binary_search_by_range(Deportista *deportistas, int count, float lowScore, f
 	return (rightIndex - leftIndex + 1);
 }
 
+
+/**
+ * @brief Realiza una busqueda por interpolación lineal recursiva por ID.
+ *
+ * Requiere que el arreglo haya sido ordenado previamente por ID ascendente.
+ *
+ * @param deportistas Arreglo de deportistas ordenado por ID.
+ * @param start Indice inicial del rango de busqueda.
+ * @param end Indice final del rango de busqueda.
+ * @param targetId ID del deportista que se desea buscar.
+ *
+ * @return Indice donde se encuentra el deportista si existe.
+ * @return -1 si el deportista no fue encontrado.
+ */
 int interpolation_search_by_id_with_indexs(Deportista* deportistas, int start, int end, int targetId)
 {
 	if (deportistas == NULL || start > end) {
@@ -171,16 +185,6 @@ int interpolation_search_by_id_with_indexs(Deportista* deportistas, int start, i
 	if (targetId < deportistas[start]->id || targetId > deportistas[end]->id) {
 		return -1;
 	}
-
-	// {2, 5, 8, 15, 22, 35, 40, 68}
-
-	// target = 35
-	// n = 8
-
-	// interpolation_search_by_id_with_indexs(deportistas, 0, 7, 35)
-
-	// supposedIdx = 0 + (35 - 2)/(68 - 2) * (7 - 0)
-	// supposedIdx = 0 + 33/66 * 7 = 3.5 = 3
 
 	int supposedIdx = start + (float) (targetId - deportistas[start]->id) / (deportistas[end]->id - deportistas[start]->id) * (end-start);
 
@@ -195,10 +199,27 @@ int interpolation_search_by_id_with_indexs(Deportista* deportistas, int start, i
 	return interpolation_search_by_id_with_indexs(deportistas, start, supposedIdx-1, targetId);
 }
 
+
+/**
+ * @brief Realiza una busqueda por interpolacion por ID.
+ *
+ * Esta funcion inicializa la busqueda sobre el arreglo completo utilizando
+ * interpolacion recursiva.
+ *
+ * Requiere que el arreglo haya sido ordenado previamente por ID ascendente.
+ *
+ * @param deportistas Arreglo de deportistas ordenado por ID.
+ * @param count Cantidad de deportistas almacenados en el arreglo.
+ * @param targetId ID del deportista que se desea buscar.
+ *
+ * @return int Indice donde se encuentra el deportista si existe.
+ * @return -1 si el deportista no fue encontrado.
+ */
 int interpolation_search_by_id(Deportista* deportistas, int count, int targetId)
 {
 	return interpolation_search_by_id_with_indexs(deportistas, 0, count-1, targetId);
 }
+
 
 /**
  * @brief Realiza una busqueda exponencial por ID.

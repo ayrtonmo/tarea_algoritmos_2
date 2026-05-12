@@ -8,34 +8,6 @@
 
 #include <math.h>
 
-/**
- * @brief Ordena un arreglo de deportistas por ID de forma ascendente con insertion sort.
- *
- * Paso previo para algoritmos de busqueda que requieren que los datos esten ordenados.
- *
- * @param deportistas Arreglo de deportistas a ordenar.
- * @param count Cantidad de deportistas almacenados en el arreglo.
- */
-void sort_deportistas_by_id_ascending(Deportista *deportistas, int count)
-{
-	if(deportistas == NULL || count < 2) {
-		return;
-	}
-
-	for(int i = 1; i < count; i++) {
-		Deportista current = deportistas[i];
-		int j = i - 1;
-
-		while( j >= 0 &&deportistas[j] != NULL &&
-			current != NULL &&
-			compare_by_criteria(deportistas[j], current, SORT_BY_ID) > 0) {
-			deportistas[j + 1] = deportistas[j];
-			j--;
-		}
-
-		deportistas[j + 1] = current;
-	}
-}
 
 /**
  * @brief Realiza una busqueda binaria recursiva por ID.

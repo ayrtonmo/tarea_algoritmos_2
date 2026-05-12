@@ -267,25 +267,25 @@ static void run_search_interactive(void)
 
         targetId = atoi(input);
 
-        sort_deportistas_by_id_ascending(deportistas, count);
+        quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
 
         SearchAlgorithm algorithmOption = ask_search_algorithm_by_id();
         int index = -1;
 
         switch(algorithmOption) {
             case EXPONENTIAL_SEARCH:
-                sort_deportistas_by_id_ascending(deportistas, count);
+                quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
                 index = exponential_search_by_id(deportistas, count, targetId);
                 break;
 
             case INTERPOLATION_SEARCH:
-                sort_deportistas_by_id_ascending(deportistas, count);
+                quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
                 index = interpolation_search_by_id(deportistas, count, targetId);
                 break;
 
             case BINARY_SEARCH:
             default:
-                sort_deportistas_by_id_ascending(deportistas, count);
+                quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
                 index = binary_search_by_id_recursive(deportistas, 0, count - 1, targetId);
                 break;
         }
@@ -449,17 +449,17 @@ void search_by_id(int targetId)
 
     switch(algorithmOption) {
         case INTERPOLATION_SEARCH:
-            sort_deportistas_by_id_ascending(deportistas, count);
+            quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
             index = interpolation_search_by_id(deportistas, count, targetId);
             break;
 
         case EXPONENTIAL_SEARCH:
-            sort_deportistas_by_id_ascending(deportistas, count);
+            quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
             index = exponential_search_by_id(deportistas, count, targetId);
             break;
 
         case BINARY_SEARCH:
-            sort_deportistas_by_id_ascending(deportistas, count);
+            quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
             index = binary_search_by_id_recursive(
                 deportistas,
                 0,

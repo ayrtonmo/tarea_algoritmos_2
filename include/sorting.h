@@ -33,39 +33,35 @@ typedef enum {
  * @brief Algoritmos de ordenamiento disponibles.
  */
 typedef enum {
-    INSERTION_SORT = 1,        /**< Insertion sort. */
-    BUBBLE_SORT = 2,           /**< Bubble sort optimizado. */
-    SELECTION_SORT = 3,        /**< Selection sort optimizado. */
-    COCKTAIL_SHAKER_SORT = 4,   /**< Cocktail shaker sort. */
-    QUICK_SORT = 5,            /**< Quick sort. */
-    MERGE_SORT = 6             /**< Merge sort recursivo. */
+    QUICK_SORT = 1,
+    MERGE_SORT = 2
 } SortAlgorithm;
 
 /**
  * @brief Algoritmos de busqueda disponibles.
  */
 typedef enum {
-    SEQUENTIAL_SEARCH = 1,    /**< Busqueda secuencial. */
-    BINARY_SEARCH = 2,        /**< Busqueda binaria (requiere arreglo ordenado). */
-    EXPONENTIAL_SEARCH = 3,   /**< Busqueda exponencial (requiere arreglo ordenado). */
-    INTERPOLATION_SEARCH = 4  /**< Búsqueda por interpolación (requiere arreglo ordenado) */
+    SEQUENTIAL_SEARCH = 1,
+    BINARY_SEARCH = 2,
+    EXPONENTIAL_SEARCH = 3,
+    INTERPOLATION_SEARCH = 4
 } SearchAlgorithm;
 
 /**
  * @brief Criterios disponibles para la busqueda.
  */
 typedef enum {
-    SEARCH_BY_ID = 1 /**< Buscar por ID. */
+    SEARCH_BY_ID = 1
 } SearchCriteria;
 
 /**
  * @brief Tipos de pivote disponibles para la busqueda.
  */
 typedef enum {
-    PIVOT_LAST = 1,             /**< Usa el ultimo elemento como pivote. */
-    PIVOT_FIRST = 2,            /**< Usa el primer elemento como pivote. */
-    PIVOT_RANDOM = 3,           /**< Usa un elemento aleatorio como pivote. */
-    PIVOT_MEDIAN_OF_THREE = 4   /**< Usa la mediana entre primero, medio y ultimo. */
+    PIVOT_LAST = 1,
+    PIVOT_FIRST = 2,
+    PIVOT_RANDOM = 3,
+    PIVOT_MEDIAN_OF_THREE = 4
 } PivotType;
 
 int compare_by_criteria(Deportista left, Deportista right, SortCriteria criteria);

@@ -209,7 +209,6 @@ int interpolation_search_by_id_with_indexs(Deportista* deportistas, int start, i
 
 	// supposedIdx = 0 + (35 - 2)/(68 - 2) * (7 - 0)
 	// supposedIdx = 0 + 33/66 * 7 = 3.5 = 3
-	
 
 	int supposedIdx = start + (float) (targetId - deportistas[start]->id) / (deportistas[end]->id - deportistas[start]->id) * (end-start);
 

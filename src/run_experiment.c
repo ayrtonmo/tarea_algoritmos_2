@@ -5,6 +5,27 @@
 
 #include "base.h"
 
+typedef enum {
+    MERGE_VARIANT_CLASSIC = 1,
+    MERGE_VARIANT_WITH_INSERTION = 2
+} MergeVariant;
+
+typedef enum {
+    SEARCH_TYPE_BY_ID = 1,
+    SEARCH_TYPE_BY_EXACT_SCORE = 2,
+    SEARCH_TYPE_BY_SCORE_RANGE = 3
+} SearchType;
+
+typedef enum {
+    MAIN_MENU_SORTING = 1,
+    MAIN_MENU_SEARCH = 2
+} MainMenuOption;
+
+typedef enum {
+    ORDER_MENU_DESCENDING = 1,
+    ORDER_MENU_ASCENDING = 2
+} SortOrderMenuOption;
+
 /**
  * @brief Carga el CSV actual en un arreglo.
  *
@@ -51,12 +72,8 @@ static SortAlgorithm ask_sort_algorithm(void)
         system("clear");
 
         printf(BOLD BLUE "=== Algoritmo de ordenamiento ===\n" NORMAL);
-        printf(" 1.- Insertion sort\n");
-        printf(" 2.- Bubble sort\n");
-        printf(" 3.- Selection sort\n");
-        printf(" 4.- Cocktail shaker sort\n");
-        printf(" 5.- Quick sort\n");
-        printf(" 6.- Merge sort\n");
+        printf(" 1.- Quick sort\n");
+        printf(" 2.- Merge sort\n");
         printf(BOLD "Opcion: " NORMAL);
 
 
@@ -66,7 +83,7 @@ static SortAlgorithm ask_sort_algorithm(void)
 
         selected = atoi(option);
     }
-    while(selected < INSERTION_SORT || selected > MERGE_SORT);
+    while(selected < QUICK_SORT || selected > MERGE_SORT);
     //while (1);
 
     return (SortAlgorithm)selected;
@@ -108,10 +125,10 @@ static PivotType ask_quick_sort_pivot(void)
  *
  * @return int 1 para merge clasico, 2 para merge con insertion.
  */
-static int ask_merge_sort_variant(void)
+static MergeVariant ask_merge_sort_variant(void)
 {
     char option[16];
-    int selected;
+    MergeVariant selected;
 
     do {
         system("clear");
@@ -122,12 +139,12 @@ static int ask_merge_sort_variant(void)
         printf(BOLD "Opcion: " NORMAL);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
-            return 1;
+            return MERGE_VARIANT_CLASSIC;
         }
 
-        selected = atoi(option);
+        selected = (MergeVariant)atoi(option);
     }
-    while(selected < 1 || selected > 2);
+    while(selected < MERGE_VARIANT_CLASSIC || selected > MERGE_VARIANT_WITH_INSERTION);
 
     return selected;
 }
@@ -161,11 +178,11 @@ static int ask_merge_insertion_threshold(void)
 }
 
 /**
- * @brief Pregunta que busqueda usar.
+ * @brief Pregunta que algoritmo de busqueda usar para buscar por ID.
  *
  * @return SearchAlgorithm Opcion seleccionada.
  */
-static SearchAlgorithm ask_search_algorithm(void)
+static SearchAlgorithm ask_search_algorithm_by_id(void)
 {
     char option[16];
     int selected;
@@ -173,23 +190,29 @@ static SearchAlgorithm ask_search_algorithm(void)
     do {
         system("clear");
 
-        printf(BOLD BLUE "=== Algoritmo de busqueda ===\n" NORMAL);
-        printf(" 1.- Busqueda secuencial\n");
-        printf(" 2.- Busqueda binaria recursiva\n");
-        printf(" 3.- Busqueda exponencial\n");
-        printf(" 4.- Busqueda por interpolación\n\n");
+        printf(BOLD BLUE "=== Algoritmo de busqueda por ID ===\n" NORMAL);
+        printf(" 1.- Busqueda binaria recursiva\n");
+        printf(" 2.- Busqueda exponencial\n");
+        printf(" 3.- Busqueda por interpolacion\n\n");
         printf(BOLD "Opcion: " NORMAL);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
-            return 0;
+            return BINARY_SEARCH;
         }
 
         selected = atoi(option);
     }
-    while(selected < SEQUENTIAL_SEARCH || selected > INTERPOLATION_SEARCH);
-    //while(1);
+    while(selected < 1 || selected > 3);
 
-    return (SearchAlgorithm)selected;
+    switch(selected) {
+        case 2:
+            return EXPONENTIAL_SEARCH;
+        case 3:
+            return INTERPOLATION_SEARCH;
+        case 1:
+        default:
+            return BINARY_SEARCH;
+    }
 }
 
 /**
@@ -197,10 +220,10 @@ static SearchAlgorithm ask_search_algorithm(void)
  *
  * @return int 1=ID, 2=Puntaje exacto, 3=Rango de puntaje
  */
-static int ask_search_type(void)
+static SearchType ask_search_type(void)
 {
     char option[16];
-    int selected;
+    SearchType selected;
 
     do {
         system("clear");
@@ -212,12 +235,12 @@ static int ask_search_type(void)
         printf(BOLD "Opcion: " NORMAL);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
-            return 1;
+            return SEARCH_TYPE_BY_ID;
         }
 
-        selected = atoi(option);
+        selected = (SearchType)atoi(option);
     }
-    while(selected < 1 || selected > 3);
+    while(selected < SEARCH_TYPE_BY_ID || selected > SEARCH_TYPE_BY_SCORE_RANGE);
 
     return selected;
 }
@@ -226,13 +249,13 @@ static void run_search_interactive(void)
 {
     Deportista *deportistas = NULL;
     int count = 0;
-    int type = ask_search_type();
+    SearchType type = ask_search_type();
 
     if(!load_data(&deportistas, &count)) {
         return;
     }
 
-    if(type == 1) {
+    if(type == SEARCH_TYPE_BY_ID) {
         char input[32];
         int targetId;
 
@@ -246,7 +269,26 @@ static void run_search_interactive(void)
 
         sort_deportistas_by_id_ascending(deportistas, count);
 
-        int index = binary_search_by_id_recursive(deportistas, 0, count - 1, targetId);
+        SearchAlgorithm algorithmOption = ask_search_algorithm_by_id();
+        int index = -1;
+
+        switch(algorithmOption) {
+            case EXPONENTIAL_SEARCH:
+                sort_deportistas_by_id_ascending(deportistas, count);
+                index = exponential_search_by_id(deportistas, count, targetId);
+                break;
+
+            case INTERPOLATION_SEARCH:
+                sort_deportistas_by_id_ascending(deportistas, count);
+                index = interpolation_search_by_id(deportistas, count, targetId);
+                break;
+
+            case BINARY_SEARCH:
+            default:
+                sort_deportistas_by_id_ascending(deportistas, count);
+                index = binary_search_by_id_recursive(deportistas, 0, count - 1, targetId);
+                break;
+        }
 
         if(index == -1) {
             char detail[32];
@@ -260,7 +302,7 @@ static void run_search_interactive(void)
         return;
     }
 
-    if(type == 2) {
+    if(type == SEARCH_TYPE_BY_EXACT_SCORE) {
         char input[64];
         float targetScore;
 
@@ -288,7 +330,7 @@ static void run_search_interactive(void)
         return;
     }
 
-    /* type == 3: rango */
+    /* SEARCH_TYPE_BY_SCORE_RANGE: rango */
     {
         char input[64];
         float lowScore, highScore;
@@ -354,7 +396,7 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
         case MERGE_SORT:
         {
             Deportista *temp = malloc(sizeof(Deportista) * count);
-            int mergeVariant = ask_merge_sort_variant();
+            MergeVariant mergeVariant = ask_merge_sort_variant();
 
             if(temp == NULL) {
                 print_error(ERROR_MEMORY_ALLOCATION_FAILED, NULL);
@@ -362,7 +404,7 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
                 return;
             }
 
-            if(mergeVariant == 1) {
+            if(mergeVariant == MERGE_VARIANT_CLASSIC) {
                 merge_sort(deportistas, 0, count - 1, criteria, order, temp);
             } else {
                 int threshold = ask_merge_insertion_threshold();
@@ -400,7 +442,7 @@ void search_by_id(int targetId)
     int index = -1;
     char detail[32];
 
-    algorithmOption = ask_search_algorithm();
+    algorithmOption = ask_search_algorithm_by_id();
     if(!load_data(&deportistas, &count)) {
         return;
     }
@@ -561,7 +603,7 @@ static SortCriteria ask_sort_criteria(void)
 static SortOrder ask_sort_order(void)
 {
     char option[16];
-    int selected;
+    SortOrderMenuOption selected;
 
     do {
         system("clear");
@@ -572,14 +614,14 @@ static SortOrder ask_sort_order(void)
         printf(BOLD "Opcion: " NORMAL);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
-            return 0;
+            return ASCENDING;
         }
 
-        selected = atoi(option);
+        selected = (SortOrderMenuOption)atoi(option);
     }
-    while(selected < 1 || selected > 2);
+    while(selected < ORDER_MENU_DESCENDING || selected > ORDER_MENU_ASCENDING);
 
-    return (selected == 1) ? DESCENDING : ASCENDING;
+    return (selected == ORDER_MENU_DESCENDING) ? DESCENDING : ASCENDING;
 }
 
 /**
@@ -588,7 +630,7 @@ static SortOrder ask_sort_order(void)
 void run_experiment(void)
 {
     char option[16];
-    int selected;
+    MainMenuOption selected;
 
     do {
         system("clear");
@@ -602,11 +644,11 @@ void run_experiment(void)
             return;
         }
 
-        selected = atoi(option);
+        selected = (MainMenuOption)atoi(option);
     }
-    while(selected < 1 || selected > 2);
+    while(selected < MAIN_MENU_SORTING || selected > MAIN_MENU_SEARCH);
 
-    if(selected == 1) {
+    if(selected == MAIN_MENU_SORTING) {
         SortCriteria criteria = ask_sort_criteria();
         SortOrder order = ask_sort_order();
 

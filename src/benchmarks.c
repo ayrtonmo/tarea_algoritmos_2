@@ -696,3 +696,196 @@ void run_sort_benchmark()
     free_deportistas_array(baseArray, count);
     printf(BG_GREEN "\nBenchmark de ordenamiento guardado con exito en %s\n" RESET, SORT_BENCHMARK_ROUTE);
 }
+
+/**
+ * @brief Ejecuta el benchmark de Quick Select y guarda sus resultados en CSV.
+ */
+void run_select_benchmark()
+{
+    int count = 0;
+    Deportista *baseArray = load_deportistas_array(&count);
+
+    if(baseArray == NULL || count <= 0) {
+        if(baseArray != NULL) {
+            free_deportistas_array(baseArray, count);
+        }
+
+        print_error(ERROR_BENCHMARK_DATA_LOAD_FAILED, NULL);
+        return;
+    }
+
+    int intervals = (count < INTERVAL_SIZE) ? count : INTERVAL_SIZE;
+    int stepSize = count / intervals;
+
+    if(stepSize <= 0) {
+        stepSize = 1;
+    }
+
+    FILE *out = fopen(SELECT_BENCHMARK_ROUTE, "w");
+
+    if(out == NULL) {
+        print_error(ERROR_FILE_CREATE_FAILED, SELECT_BENCHMARK_ROUTE);
+        free_deportistas_array(baseArray, count);
+        return;
+    }
+
+    fprintf(
+        out,
+        "n,"
+        "mejor_last_s,mejor_first_s,mejor_random_s,mejor_median_s,"
+        "promedio_last_s,promedio_first_s,promedio_random_s,promedio_median_s,"
+        "peor_last_s,peor_first_s,peor_random_s,peor_median_s\n"
+    );
+
+    printf(BOLD_BLUE "\n=== Quick Select benchmark ===\n" RESET);
+    printf(DIM "Archivo: %s | intervalos: %d | repeticiones: %d\n\n" RESET,
+        SELECT_BENCHMARK_ROUTE,
+        intervals,
+        EXPERIMENT_REPEATS
+    );
+
+    printf("n\t| caso\t| last(s) | first(s) | random(s) | median(s)\n");
+    printf(ASCII_HR_WIDE "\n");
+
+    printf(HIDE_CURSOR);
+
+    for(int i = 0; i < intervals; i++) {
+        int n = (i == intervals - 1) ? count : (stepSize * (i + 1));
+        double caseTotals[3][4] = {{0.0}};
+
+        for(int caseIndex = BENCHMARK_CASE_BEST; caseIndex <= BENCHMARK_CASE_WORST; caseIndex++) {
+            BenchmarkCase benchmarkCase = (BenchmarkCase)caseIndex;
+
+            for(int r = 0; r < EXPERIMENT_REPEATS; r++) {
+                PivotType pivots[4] = {
+                    PIVOT_LAST,
+                    PIVOT_FIRST,
+                    PIVOT_RANDOM,
+                    PIVOT_MEDIAN_OF_THREE
+                };
+
+                for(int p = 0; p < 4; p++) {
+                    Deportista *work;
+                    Deportista selected;
+                    clock_t start;
+                    clock_t end;
+                    volatile int selectedId;
+                    int k;
+
+                    progress_update_line(
+                        "quickselect",
+                        i + 1,
+                        intervals,
+                        n,
+                        r + 1,
+                        EXPERIMENT_REPEATS,
+                        get_case_name(benchmarkCase)
+                    );
+
+                    work = clone_deportistas_array(baseArray, n);
+                    if(work == NULL) {
+                        handle_benchmark_memory_error(baseArray, count, out);
+                    }
+
+                    if(benchmarkCase == BENCHMARK_CASE_BEST) {
+                        insertion_sort_deportistas(work, n, SORT_BY_PUNTAJE, DESCENDING);
+                        k = 1;
+                    }
+                    else if(benchmarkCase == BENCHMARK_CASE_AVERAGE) {
+                        shuffle_deportistas_array(work, n);
+                        k = (n / 2) + 1;
+                    }
+                    else {
+                        insertion_sort_deportistas(work, n, SORT_BY_PUNTAJE, ASCENDING);
+                        k = 1;
+                    }
+
+                    start = clock();
+
+                    selected = quick_select_deportista(
+                        work,
+                        n,
+                        k,
+                        SORT_BY_PUNTAJE,
+                        DESCENDING,
+                        pivots[p]
+                    );
+
+                    if(selected != NULL) {
+                        selectedId = selected->id;
+                    } else {
+                        selectedId = -1;
+                    }
+
+                    end = clock();
+
+                    caseTotals[caseIndex][p] += (double)(end - start) / CLOCKS_PER_SEC;
+
+                    (void)selectedId;
+                    free_deportistas_array(work, n);
+                }
+            }
+
+            for(int p = 0; p < 4; p++) {
+                caseTotals[caseIndex][p] /= EXPERIMENT_REPEATS;
+            }
+        }
+
+        fprintf(
+            out,
+            "%d,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f\n",
+            n,
+            caseTotals[BENCHMARK_CASE_BEST][0],
+            caseTotals[BENCHMARK_CASE_BEST][1],
+            caseTotals[BENCHMARK_CASE_BEST][2],
+            caseTotals[BENCHMARK_CASE_BEST][3],
+            caseTotals[BENCHMARK_CASE_AVERAGE][0],
+            caseTotals[BENCHMARK_CASE_AVERAGE][1],
+            caseTotals[BENCHMARK_CASE_AVERAGE][2],
+            caseTotals[BENCHMARK_CASE_AVERAGE][3],
+            caseTotals[BENCHMARK_CASE_WORST][0],
+            caseTotals[BENCHMARK_CASE_WORST][1],
+            caseTotals[BENCHMARK_CASE_WORST][2],
+            caseTotals[BENCHMARK_CASE_WORST][3]
+        );
+
+        progress_clear_line();
+
+        printf(
+            "%d\t| mejor\t\t| %.10f | %.10f | %.10f | %.10f\n",
+            n,
+            caseTotals[BENCHMARK_CASE_BEST][0],
+            caseTotals[BENCHMARK_CASE_BEST][1],
+            caseTotals[BENCHMARK_CASE_BEST][2],
+            caseTotals[BENCHMARK_CASE_BEST][3]
+        );
+
+        printf(
+            "%d\t| promedio\t| %.10f | %.10f | %.10f | %.10f\n",
+            n,
+            caseTotals[BENCHMARK_CASE_AVERAGE][0],
+            caseTotals[BENCHMARK_CASE_AVERAGE][1],
+            caseTotals[BENCHMARK_CASE_AVERAGE][2],
+            caseTotals[BENCHMARK_CASE_AVERAGE][3]
+        );
+
+        printf(
+            "%d\t| peor\t\t| %.10f | %.10f | %.10f | %.10f\n",
+            n,
+            caseTotals[BENCHMARK_CASE_WORST][0],
+            caseTotals[BENCHMARK_CASE_WORST][1],
+            caseTotals[BENCHMARK_CASE_WORST][2],
+            caseTotals[BENCHMARK_CASE_WORST][3]
+        );
+    }
+
+    progress_clear_line();
+    printf(SHOW_CURSOR);
+
+    fclose(out);
+    free_deportistas_array(baseArray, count);
+
+    printf(BG_GREEN "\nBenchmark de Quick Select guardado con exito en %s\n" RESET,
+        SELECT_BENCHMARK_ROUTE
+    );
+}

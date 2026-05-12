@@ -40,6 +40,7 @@
 #define CSV_ROUTE "./db/deportistas.csv"            /**< CSV principal de deportistas. */
 #define SEARCH_BENCHMARK_ROUTE "./db/search_benchmark.csv"  /**< Salida de benchmark de busqueda. */
 #define SORT_BENCHMARK_ROUTE "./db/sort_benchmark.csv"      /**< Salida de benchmark de ordenamiento. */
+#define SELECT_BENCHMARK_ROUTE "./db/select_benchmark.csv"
 /** @} */
 
 
@@ -57,6 +58,11 @@ void run_search_benchmark();
  * @brief Ejecuta el benchmark de algoritmos de ordenamiento.
  */
 void run_sort_benchmark();
+
+/**
+ * @brief Ejecuta el benchmark de Quick Select (algoritmo de selección).
+ */
+void run_select_benchmark();
 
 /**
  * @brief Busca un deportista por su ID.

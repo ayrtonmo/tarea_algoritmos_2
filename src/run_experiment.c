@@ -561,6 +561,7 @@ void print_help(const char *programName)
     printf("  -k [posicion]      Muestra el k-esimo mejor deportista por puntaje\n");
     printf("  -b                 Ejecuta benchmark de busqueda\n");
     printf("  -s                 Ejecuta benchmark de ordenamiento\n");
+    printf("  -q                 Ejecuta benchmark de Quick Select\n");
 }
 
 /**

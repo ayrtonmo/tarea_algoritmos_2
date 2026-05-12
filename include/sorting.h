@@ -45,9 +45,10 @@ typedef enum {
  * @brief Algoritmos de busqueda disponibles.
  */
 typedef enum {
-    SEQUENTIAL_SEARCH = 1, /**< Busqueda secuencial. */
-    BINARY_SEARCH = 2,      /**< Busqueda binaria (requiere arreglo ordenado). */
-    EXPONENTIAL_SEARCH = 3 /**< Busqueda exponencial (requiere arreglo ordenado). */
+    SEQUENTIAL_SEARCH = 1,    /**< Busqueda secuencial. */
+    BINARY_SEARCH = 2,        /**< Busqueda binaria (requiere arreglo ordenado). */
+    EXPONENTIAL_SEARCH = 3,   /**< Busqueda exponencial (requiere arreglo ordenado). */
+    INTERPOLATION_SEARCH = 4  /**< Búsqueda por interpolación (requiere arreglo ordenado) */
 } SearchAlgorithm;
 
 /**

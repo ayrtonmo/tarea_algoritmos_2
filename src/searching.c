@@ -190,17 +190,43 @@ int binary_search_by_range(Deportista *deportistas, int count, float lowScore, f
 	return (rightIndex - leftIndex + 1);
 }
 
-int interpolation_search_by_id_with_indexs(Deportista* deportistas, int start, int end)
+int interpolation_search_by_id_with_indexs(Deportista* deportistas, int start, int end, int targetId)
 {
-
-
-}
-
-int interpolation_search_by_id(Deportista* deportistas, int count)
-{
-	if(deportistas == NULL || count <= 0 || deportistas[0] == NULL) {
+	if (deportistas == NULL || start > end) {
 		return -1;
 	}
+
+	if (targetId < deportistas[start]->id || targetId > deportistas[end]->id) {
+		return -1;
+	}
+
+	// {2, 5, 8, 15, 22, 35, 40, 68}
+
+	// target = 35
+	// n = 8
+
+	// interpolation_search_by_id_with_indexs(deportistas, 0, 7, 35)
+
+	// supposedIdx = 0 + (35 - 2)/(68 - 2) * (7 - 0)
+	// supposedIdx = 0 + 33/66 * 7 = 3.5 = 3
+	
+
+	int supposedIdx = start + (float) (targetId - deportistas[start]->id) / (deportistas[end]->id - deportistas[start]->id) * (end-start);
+
+	if (deportistas[supposedIdx]->id == targetId) {
+		return supposedIdx;
+	}
+
+	if (deportistas[supposedIdx]->id < targetId) {
+		return interpolation_search_by_id_with_indexs(deportistas, supposedIdx+1, end, targetId);
+	}
+
+	return interpolation_search_by_id_with_indexs(deportistas, start, supposedIdx-1, targetId);
+}
+
+int interpolation_search_by_id(Deportista* deportistas, int count, int targetId)
+{
+	return interpolation_search_by_id_with_indexs(deportistas, 0, count-1, targetId);
 }
 
 /**

@@ -1,1 +1,97 @@
 \chapter{Marco teórico}
+
+\section{Algoritmos de ordenamiento}
+
+Existen muchísimos algoritmos de ordenamiento, desde algunos muy eficientes, que pueden llegar a ser de una complejidad temporal de apenas $O(n)$, 
+como \textit{Radix Sort}, hasta algunos extremadamente ineficientes, que pueden llegar incluso a ser de $O(n \times n!)$, como lo es el caso de 
+\textit{Bogo Sort}, pero en este trabajo nos centraremos principalmente en \textit{Merge Sort} y \textit{Quick Sort}, que son algoritmos relativamente
+eficientes y que emplean el principio de \textbf{"Divide y Vencerás"}. \\
+
+\subsection{Merge Sort}
+
+\textit{Merge Sort}, también conocido como "Ordenamiento por Mezcla", es un algoritmo de ordenamiento recursivo, que en cada paso va dividiendo el 
+arreglo en 2 subarreglos de aproximadamente la mitad del tamaño anterior, y eso lo hace hasta que todos los subarreglos sean de tamaño 1. Cuando eso sucede,
+se comienzan a combinar pares de subarreglos adyacentes, recorriéndolos linealmente para fusionarlos en el orden correcto, hasta que finalmente todo el 
+arreglo queda ordenado. \\
+
+En base al principio en el que se fundamenta \textit{Merge Sort}, es posible deducir su complejidad temporal mediante la siguiente ecuación de recurrencia: \\
+
+$T(n) = 2 T(\frac{n}{2}) + O(n)$ \\
+
+Esto se debe a que el problema se divide recursivamente en 2 subproblemas de tamaño $n/2$, mientras que el costo adicional corresponde al proceso de 
+fusión de los subarreglos, el cual requiere recorrer linealmente los elementos para ubicarlos en el orden correcto, por lo que dicho costo es de 
+complejidad lineal. \\
+
+Para resolver la ecuación de recurrencia, se puede emplear el método de iteración. Considerando una constante $k$ para representar el costo lineal, se tiene: \\
+
+$T(n) = 2 T(\frac{n}{2}) + kn$ \\
+
+A partir de esto, la expresión equivalente para $T(\frac{n}{2})$ sería: \\
+
+$T(\frac{n}{2}) = 2 T(\frac{n}{4}) + k(\frac{n}{2})$ \\
+
+Entonces, reemplazando en la ecuación original, se obtiene: \\
+
+$T(n) = 2 \left( 2 T(\frac{n}{4}) + k(\frac{n}{2}) \right) + kn$ \\
+
+Simplificando: \\
+
+$T(n) = 4T(\frac{n}{4}) + 2kn$ \\
+
+Ahora, realizando otra iteración, se tiene que: \\
+
+$T(\frac{n}{4}) = 2 T(\frac{n}{8}) + k(\frac{n}{4})$ \\
+
+Reemplazando nuevamente: \\
+
+$T(n) = 4 \left( 2T(\frac{n}{8}) + k(\frac{n}{4}) \right) + 2kn$ \\
+
+$T(n) = 8T(\frac{n}{8}) + 3kn$ \\
+
+Continuando de esta forma, se puede generalizar que: \\
+
+$T(n) = 2T(\frac{n}{2}) + kn = 4T(\frac{n}{4}) + 2kn = 8T(\frac{n}{8}) + 3kn = 2^i T(\frac{n}{2^i}) + ikn$ \\
+
+La recursión finaliza cuando se alcanza el caso base, es decir, cuando los subarreglos tienen tamaño 1. Por lo tanto, debe cumplirse que: \\
+
+$\frac{n}{2^i} = 1$ \\
+
+Despejando: \\
+
+$i = \log_{2}(n)$ \\
+
+Reemplazando esto en la expresión general obtenida anteriormente: \\
+
+$T(n) = 2^{\log_{2}(n)} T(1) + \log_{2}(n)kn$ \\
+
+Como $2^{\log_{2}(n)} = n$, entonces: \\
+
+$T(n) = nT(1) + kn\log_{2}(n)$ \\
+
+Finalmente, considerando que $T(1)$ y $k$ son constantes, se concluye que: \\
+
+$T(n) \in O(n \log n)$ \\
+
+Por lo tanto, \textit{Merge Sort} posee complejidad temporal $O(n \log n)$ tanto en el mejor caso, como en el caso promedio y peor caso, ya que el arreglo 
+siempre se divide de manera uniforme, independientemente del orden inicial de los elementos. \\
+
+\subsection{Merge-Insertion Sort}
+
+\textit{Merge-Insertion Sort} corresponde a una variante optimizada de \textit{Merge Sort}, cuyo objetivo es reducir el overhead recursivo que se produce al 
+trabajar con subarreglos muy pequeños. \\
+
+La idea principal consiste en que, cuando los subarreglos alcanzan un tamaño suficientemente pequeño, en lugar de continuar dividiéndolos recursivamente, 
+se utiliza \textit{Insertion Sort} para ordenarlos directamente. \\
+
+Esto se hace debido a que \textit{Insertion Sort}, a pesar de poseer complejidad $O(n^2)$ en el peor caso, tiene un rendimiento muy eficiente para arreglos 
+de tamaño reducido, ya que posee un overhead muy bajo y además aprovecha favorablemente arreglos parcialmente ordenados. \\
+
+De esta manera, \textit{Merge-Insertion Sort} busca combinar las ventajas de ambos algoritmos: la eficiencia asintótica de \textit{Merge Sort} para arreglos 
+grandes, junto con la simplicidad y rapidez de \textit{Insertion Sort} en subarreglos pequeños. \\
+
+En términos de complejidad asintótica, esta variante sigue perteneciendo a $O(n \log n)$, aunque en la práctica puede presentar mejoras de rendimiento 
+respecto a la versión clásica de \textit{Merge Sort}, dependiendo del umbral utilizado para decidir cuándo aplicar \textit{Insertion Sort}, que es uno de
+los aspectos que se analizará en el presente trabajo. \\
+
+\subsection{Quick Sort}
+

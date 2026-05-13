@@ -1,17 +1,18 @@
 \chapter{Introducción}
+
 \textbf{"Divide y Vencerás"} es un paradigma de programación, que consiste en un conjunto de técnicas algorítmicas en las que primero se divide el problema
 a resolver en subproblemas de menor tamaño y de la misma naturaleza, luego se resuelven los subproblemas de manera independiente y recursiva, 
-hasta llegar a un caso base (que es un caso tan trivial que detiene la recursión), y finalmente se combinan los resultados para llegar a la solución final.
+hasta llegar a un caso base (que es un caso tan trivial que detiene la recursión), y finalmente se combinan los resultados para llegar a la solución final. \\
 
-En el presente informe, se analizará empíricamente la complejidad algorítmica de varios algoritmos que utilizan este paradigma de programación, y evaluar el
-impacto que puede tener cada variante de cada algoritmo.
+En el presente informe, se analizará empíricamente la complejidad algorítmica de varios algoritmos que utilizan este paradigma de programación, y además,
+se evaluará el impacto que tiene cada variante de cada algoritmo. \\
 
 Los algoritmos que serán objeto de este análisis involucrarán tanto algoritmos de ordenamiento, como algoritmos de búsqueda, como también un algoritmo de 
-selección.
+selección. \\
 
-Estos son:
+Estos algoritmos son: \\
 
-\textbf{ORDENAMIENTO}
+\textbf{Ordenamiento}
 
 \begin{itemize}
     \item \textit{Merge Sort}.
@@ -22,7 +23,7 @@ Estos son:
     \item \textit{Quick Sort} escogiendo al pivote como resultado de una mediana entre 3 elementos.
 \end{itemize}
 
-\textbf{BÚSQUEDA}
+\textbf{Búsqueda}
 
 \begin{itemize}
     \item Búsqueda binaria clásica.
@@ -31,11 +32,17 @@ Estos son:
     \item Búsqueda por interpolación.
 \end{itemize}
 
-\textbf{SELECCIÓN}
+\textbf{Selección}
 
 \begin{itemize}
     \item \textit{Quick Select}.
 \end{itemize}
+
+Todo lo anterior se encuentra enmarcado en un sistema de gestión de deportistas desarrollado previamente, el cual trabaja con registros que contienen información 
+como ID, nombre, equipo, puntaje y cantidad de competencias disputadas.  Sobre este conjunto de datos, se implementaron distintas funcionalidades prácticas, 
+tales como el ordenamiento de deportistas según distintos criterios, la búsqueda eficiente de registros, la obtención del k-ésimo mejor deportista mediante 
+algoritmos de selección, y la generación de rankings basados en puntaje.  Además, se realizaron \textit{benchmarks} experimentales utilizando distintos tamaños 
+de entrada, con el objetivo de comparar el comportamiento y el rendimiento de los algoritmos implementados en escenarios de mejor caso, peor caso y caso promedio.
 
 
 

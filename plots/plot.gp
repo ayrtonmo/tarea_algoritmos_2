@@ -18,15 +18,20 @@ set key autotitle columnhead
 
 searchFile = 'db/search_benchmark.csv'
 sortFile   = 'db/sort_benchmark.csv'
+selectFile = 'db/select_benchmark.csv'
 
 searchAverageOut   = 'plots/search_average_benchmark.pdf'
 searchWorstOut     = 'plots/search_worst_benchmark.pdf'
 sortBestOut    = 'plots/sort_best_benchmark.pdf'
 sortAverageOut = 'plots/sort_average_benchmark.pdf'
 sortWorstOut   = 'plots/sort_worst_benchmark.pdf'
+selectBestOut    = 'plots/select_best_benchmark.pdf'
+selectAverageOut = 'plots/select_average_benchmark.pdf'
+selectWorstOut   = 'plots/select_worst_benchmark.pdf'
 
 hasSearch = int(system(sprintf("test -f '%s' && echo 1 || echo 0", searchFile)))
 hasSort   = int(system(sprintf("test -f '%s' && echo 1 || echo 0", sortFile)))
+hasSelect = int(system(sprintf("test -f '%s' && echo 1 || echo 0", selectFile)))
 
 if (!hasSearch) {
 	print sprintf("ERROR: no existe %s", searchFile)
@@ -34,6 +39,11 @@ if (!hasSearch) {
 }
 if (!hasSort) {
 	print sprintf("ERROR: no existe %s", sortFile)
+	exit 1
+}
+
+if (!hasSelect) {
+	print sprintf("ERROR: no existe %s", selectFile)
 	exit 1
 }
 
@@ -105,3 +115,45 @@ if (columnCount < 19) {
 	plot for [col=14:19] sortFile using 1:col lw 4 title columnhead(col)
 }
 unset output
+
+# Quick Select benchmark: mejor caso
+set output selectBestOut
+set title 'Quick Select benchmark - mejor caso'
+set logscale y
+columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", selectFile)))
+if (columnCount < 13) {
+	print sprintf("ERROR: CSV invalido (pocas columnas): %s", selectFile)
+	exit 1
+} else {
+	plot for [col=2:5] selectFile using 1:col lw 4 title columnhead(col)
+}
+unset output
+unset logscale y
+
+# Quick Select benchmark: caso promedio
+set output selectAverageOut
+set title 'Quick Select benchmark - caso promedio'
+set logscale y
+columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", selectFile)))
+if (columnCount < 13) {
+	print sprintf("ERROR: CSV invalido (pocas columnas): %s", selectFile)
+	exit 1
+} else {
+	plot for [col=6:9] selectFile using 1:col lw 4 title columnhead(col)
+}
+unset output
+unset logscale y
+
+# Quick Select benchmark: peor caso
+set output selectWorstOut
+set title 'Quick Select benchmark - peor caso'
+set logscale y
+columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", selectFile)))
+if (columnCount < 13) {
+	print sprintf("ERROR: CSV invalido (pocas columnas): %s", selectFile)
+	exit 1
+} else {
+	plot for [col=10:13] selectFile using 1:col lw 4 title columnhead(col)
+}
+unset output
+unset logscale y

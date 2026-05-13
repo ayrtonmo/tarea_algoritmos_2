@@ -122,18 +122,83 @@ int binary_search_by_id(Deportista *deportistas, int left, int right, int target
 
 
 /**
+ * @brief Busca el primer indice con puntaje mayor o igual al limite inferior.
+ *
+ * En vez de buscar una coincidencia exacta, conserva el mejor candidato sigue 
+ * buscando hacia la izquierda para ubicar la primera posicion valida dentro del rango.
+ *
+ * @param deportistas Arreglo de deportistas ordenado por puntaje ascendente.
+ * @param left Indice inicial del rango de busqueda.
+ * @param right Indice final del rango de busqueda.
+ * @param lowScore Limite inferior inclusivo del rango.
+ * @param bestIndex Mejor indice candidato encontrado hasta el momento.
+ * @return int Primer indice con puntaje mayor o igual a lowScore, o -1 si no existe.
+ */
+static int find_first_score_at_least(Deportista *deportistas, int left, int right, float lowScore, int bestIndex)
+{
+	if(left > right) {
+		return bestIndex;
+	}
+
+	int mid = left + (right - left) / 2;
+
+	if(deportistas[mid] == NULL) {
+		return bestIndex;
+	}
+
+	if(deportistas[mid]->puntaje >= lowScore) {
+		return find_first_score_at_least(deportistas, left, mid - 1, lowScore, mid);
+	}
+
+	return find_first_score_at_least(deportistas, mid + 1, right, lowScore, bestIndex );
+}
+
+/**
+ * @brief Busca el ultimo indice con puntaje menor o igual al limite superior.
+ *
+ * Exactamente mismo funcionamiento que find_first_score_at_least, pero busca hacia la derecha.
+ *
+ * @param deportistas Arreglo de deportistas ordenado por puntaje ascendente.
+ * @param left Indice inicial del rango de busqueda.
+ * @param right Indice final del rango de busqueda.
+ * @param highScore Limite superior inclusive del rango.
+ * @param bestIndex Mejor indice candidato encontrado hasta el momento.
+ * @return int Ultimo indice con puntaje menor o igual a highScore, o -1 si no existe.
+ */
+static int find_last_score_at_most(Deportista *deportistas, int left, int right, float highScore, int bestIndex)
+{
+	if(left > right) {
+		return bestIndex;
+	}
+
+	int mid = left + (right - left) / 2;
+
+	if(deportistas[mid] == NULL) {
+		return bestIndex;
+	}
+
+	if(deportistas[mid]->puntaje <= highScore) {
+		return find_last_score_at_most(deportistas, mid + 1, right, highScore, mid);
+	}
+
+	return find_last_score_at_most(deportistas, left, mid - 1, highScore, bestIndex );
+}
+
+/**
  * @brief Busca un rango de deportistas cuyo puntaje este entre lowScore y highScore.
  *
- * El arreglo es ordenado por puntaje ascendente usando insertion_sort_deportistas
- * antes de aplicar las busquedas binarias modificadas.
+ * El arreglo es ordenado por puntaje ascendente usando insertion_sort_deportistas.
+ * Luego se aplican dos busquedas binarias modificadas: una para encontrar
+ * el primer puntaje mayor o igual al limite inferior y otra para encontrar
+ * el ultimo puntaje menor o igual al limite superior.
  *
- * @param deportistas Arreglo de deportistas (modificado por la ordenacion).
+ * @param deportistas Arreglo de deportistas, modificado por la ordenacion.
  * @param count Cantidad de elementos.
  * @param lowScore Limite inferior inclusive.
  * @param highScore Limite superior inclusive.
- * @param outLeft Direccion donde se escribe el indice del primer elemento encontrado (o -1).
- * @param outRight Direccion donde se escribe el indice del ultimo elemento encontrado (o -1).
- * @return Cantidad de elementos en el rango.
+ * @param outLeft Direccion donde se escribe el primer indice dentro del rango.
+ * @param outRight Direccion donde se escribe el ultimo indice dentro del rango.
+ * @return int Cantidad de elementos encontrados en el rango.
  */
 int binary_search_by_range(Deportista *deportistas, int count, float lowScore, float highScore, int *outLeft, int *outRight)
 {
@@ -141,25 +206,29 @@ int binary_search_by_range(Deportista *deportistas, int count, float lowScore, f
 		return 0;
 	}
 
+	*outLeft = -1;
+	*outRight = -1;
+
 	if(lowScore > highScore) {
-		int tmp = (int)lowScore; lowScore = highScore; highScore = tmp;
+		float tmp = lowScore;
+		lowScore = highScore;
+		highScore = tmp;
 	}
 
 	insertion_sort_deportistas(deportistas, count, SORT_BY_PUNTAJE, ASCENDING);
 
-	int leftIndex = binary_search_by_score(deportistas, 0, count - 1, lowScore);
-	int rightIndex = binary_search_by_score(deportistas, 0, count - 1, highScore);
+	int leftIndex = find_first_score_at_least(deportistas, 0, count - 1, lowScore, -1);
+
+	int rightIndex = find_last_score_at_most(deportistas, 0, count - 1, highScore, -1);
 
 	if(leftIndex == -1 || rightIndex == -1 || leftIndex > rightIndex) {
-		*outLeft = -1;
-		*outRight = -1;
 		return 0;
 	}
 
 	*outLeft = leftIndex;
 	*outRight = rightIndex;
 
-	return (rightIndex - leftIndex + 1);
+	return rightIndex - leftIndex + 1;
 }
 
 

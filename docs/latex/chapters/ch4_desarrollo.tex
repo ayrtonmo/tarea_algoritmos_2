@@ -20,7 +20,7 @@ La generación de datos de los parámetros asociados a deportistas se realizó m
 
 Existen muchísimos algoritmos de ordenamiento, desde algunos muy eficientes, que pueden llegar a ser de una complejidad temporal de apenas $O(n)$, 
 como \textit{Radix Sort}, hasta algunos extremadamente ineficientes, que pueden llegar incluso a ser de $O(n \times n!)$, como lo es el caso de 
-\textit{Bogo Sort}, pero en este trabajo nos centraremos principalmente en \textit{Merge Sort} y \textit{Quick Sort}, que son algoritmos relativamente
+\textit{Bogo Sort}, pero en este trabajo nos centramos solamente en \textit{Merge Sort} y \textit{Quick Sort}, que son algoritmos relativamente
 eficientes y que emplean el principio de \textbf{"Divide y Vencerás"}. \\
 
 \subsection{Merge Sort}
@@ -74,15 +74,15 @@ $\frac{n}{2^i} = 1$ \\
 
 Despejando: \\
 
-$i = \log_{2}(n)$ \\
+$i = \log n$ \\
 
 Reemplazando esto en la expresión general obtenida anteriormente: \\
 
-$T(n) = 2^{\log_{2}(n)} T(1) + \log_{2}(n)kn$ \\
+$T(n) = 2^{\log n} T(1) + \log n kn$ \\
 
-Como $2^{\log_{2}(n)} = n$, entonces: \\
+Como $2^{\log n} = n$, entonces: \\
 
-$T(n) = nT(1) + kn\log_{2}(n)$ \\
+$T(n) = nT(1) + kn\log n$ \\
 
 Finalmente, considerando que $T(1)$ y $k$ son constantes, se concluye que: \\
 
@@ -90,6 +90,8 @@ $T(n) \in O(n \log n)$ \\
 
 Por lo tanto, \textit{Merge Sort} posee complejidad temporal $O(n \log n)$ tanto en el mejor caso, como en el caso promedio y peor caso, ya que el arreglo 
 siempre se divide de manera uniforme, independientemente del orden inicial de los elementos. \\
+
+\newpage
 
 \subsection{Merge-Insertion Sort}
 
@@ -115,7 +117,7 @@ los aspectos que se analizará en el presente trabajo. \\
 ir colocando los elementos que sean menores al pivote, a su izquierda, y los que sean mayores, a su derecha.  Y luego con las particiones (subarreglos) que 
 hayan quedado, volver a hacer lo mismo, hasta llegar al caso trivial que es cuando las particiones llegan a tener a lo más un elemento. \\
 
-Existen varias formas de seleccionar el pivote en este algoritmo.  Estas son:  \\
+Existen varias formas de seleccionar el pivote en este algoritmo.  Estas son:  
 
 \begin{itemize}
     \item El primer elemento.
@@ -136,17 +138,140 @@ El caso promedio ocurre cuando las particiones de \textit{Quick Sort}, quedan un
 
 $T(n) = T(\frac{n}{3}) + T(\frac{2n}{3}) + O(n)$ \\
 
-Esta recurrencia también tiene una solución $T(n) \in O(n \log(n))$, por lo que la complejidad temporal para \textit{Quick Sort} en caso promedio también es 
+Esta recurrencia también tiene una solución $T(n) \in O(n \log n)$, por lo que la complejidad temporal para \textit{Quick Sort} en caso promedio también es 
 $O(n \log(n))$. \\
 
-El peor caso ocurre por ejemplo cuando el arreglo está ya ordenado y se utiliza al primer o último elemento del arreglo como pivote, ya que en esos casos, siempre
-la partición quedará extremadamente desequilibrada, con 1 elemento en uno de los lados, y los otros n-1 del otro lado, por lo que la recurrencia para ese caso sería: \\
+El peor caso ocurre por ejemplo cuando siempre la partición queda extremadamente desequilibrada, con 1 elemento en uno de los lados, y los otros n-1 del otro lado, 
+por lo que la recurrencia para ese caso sería: \\
 
 $T(n) = T(n-1) + O(n)$ \\
 
-Resolviendo esa recurrencia, se llega a que en el peor caso, \textit{Quick Sort} tiene una complejidad temporal de $O(n^2)$.
+Resolviendo esa recurrencia, se llega a que en el peor caso, \textit{Quick Sort} tiene una complejidad temporal de $O(n^2)$. \\
 
+Un ejemplo de peor caso, es cuando el arreglo ya está ordenado y el método de seleccionar el pivote, es el primer elemento, o el último. \\
 
+\section{Algoritmos de búsqueda}
 
+\subsection{Búsqueda binaria recursiva}
 
+La búsqueda binaria recursiva es un algoritmo de búsqueda, que al igual que los otros que se implementaron, utiliza el paradigma de \textbf{"Divide y Vencerás"}.  
+Funciona solo si el arreglo ya fue ordenado previamente.  La lógica del algoritmo consiste en comparar el elemento buscado con el elemento ubicado en la posición
+central del arreglo.  Si ambos elementos coinciden, la búsqueda finaliza exitosamente.  En caso contrario, si el elemento central es mayor que el valor buscado, 
+se descarta la mitad superior del arreglo y la búsqueda continúa únicamente sobre la primera mitad.  Por otro lado, si el elemento central es menor que el valor 
+buscado, se descarta la mitad inferior y la búsqueda prosigue sobre la segunda mitad del arreglo.  Este proceso se repite recursivamente hasta encontrar el 
+elemento o hasta que el rango de búsqueda se vuelva vacío. \\
+
+El peor caso para la búsqueda binaria ocurre cuando el elemento buscado no se encuentra en el arreglo, o cuando se encuentra en una de las últimas divisiones 
+realizadas por el algoritmo. En este escenario, el algoritmo debe continuar reduciendo el espacio de búsqueda hasta llegar a un subarreglo vacío o de tamaño 1. \\
+
+El caso promedio ocurre cuando el elemento buscado se encuentra luego de una cantidad intermedia de divisiones del arreglo.  Debido a que el algoritmo reduce el 
+espacio de búsqueda aproximadamente a la mitad en cada paso, el número de comparaciones sigue creciendo de forma logarítmica respecto al tamaño del arreglo. \\
+
+Por lo tanto, tanto el caso promedio como el peor caso presentan una complejidad temporal de $O(\log n)$
+
+\subsection{Búsqueda exponencial}
+
+La búsqueda exponencial es un algoritmo de búsqueda que combina una fase de expansión exponencial con búsqueda binaria. Al igual que la búsqueda binaria, 
+requiere que los datos se encuentren previamente ordenados. \\
+
+La lógica del algoritmo consiste en revisar secuencialmente elementos ubicados en posiciones que crecen exponencialmente, es decir, en posiciones de la forma:
+
+\[
+k = 2^i, \quad \forall i \in \mathbb{N}
+\]
+
+mientras el valor revisado sea menor que el elemento buscado y el índice permanezca dentro de los límites del arreglo.  \\
+
+Si el algoritmo encuentra directamente el elemento buscado en alguna de estas posiciones, la búsqueda finaliza inmediatamente. En caso contrario, cuando encuentra 
+un elemento mayor que el valor buscado, se determina un rango acotado entre la última potencia de 2 revisada y la actual, aplicando posteriormente búsqueda binaria
+sobre dicho intervalo. \\
+
+También puede ocurrir que el elemento buscado sea mayor que todos los elementos del arreglo. En ese caso, la fase exponencial continúa aumentando el índice hasta 
+alcanzar o sobrepasar el tamaño del arreglo. Cuando esto sucede, el límite superior de búsqueda se ajusta al último índice válido del arreglo antes de aplicar 
+búsqueda binaria sobre el intervalo restante. \\
+
+El peor caso ocurre cuando el elemento buscado se encuentra cerca del final del arreglo, o sea cuando es mayor que la mayoría de los elementos almacenados. 
+En ese caso, el algoritmo debe recorrer sucesivamente todas las posiciones que correspondan a potencias de 2 dentro de los límites del arreglo antes de determinar 
+el rango final de búsqueda y aplicar búsqueda binaria sobre dicho intervalo. \\
+
+Debido a que la fase de expansión exponencial realiza a lo más \(O(\log n)\) comparaciones, y posteriormente la búsqueda binaria también posee complejidad 
+\(O(\log n)\), la complejidad temporal total del algoritmo en el peor caso es $O(\log n)$ \\
+
+El caso promedio ocurre cuando el elemento buscado se encuentra en una posición intermedia del arreglo, de manera que la fase exponencial logra acotar relativamente 
+rápido el intervalo donde podría encontrarse el dato.  Posteriormente, la búsqueda binaria se aplica únicamente sobre dicho rango acotado.  Al igual que en el peor caso, 
+la complejidad temporal promedio de la búsqueda exponencial es $O(\log n)$. \\
+
+\subsection{Búsqueda por interpolación}
+
+La búsqueda por interpolación es un algoritmo de búsqueda que requiere que los datos se encuentren previamente ordenados. Su funcionamiento consiste en estimar la 
+posición probable del elemento buscado, suponiendo que los datos se encuentran distribuidos de manera uniforme. \\
+
+La posición estimada se calcula mediante la siguiente fórmula:
+
+\[
+supposed\_idx = start\_idx +
+\frac{element - array[start\_idx]}
+{array[end\_idx] - array[start\_idx]}
+\times (end\_idx - start\_idx)
+\]
+
+A diferencia de la búsqueda binaria, que siempre revisa el elemento central del arreglo, la búsqueda por interpolación intenta aproximarse directamente a la posición 
+donde probablemente se encuentre el dato buscado. Esto puede mejorar considerablemente el rendimiento cuando los datos están distribuidos uniformemente. \\
+
+El peor caso para este algoritmo ocurre cuando los datos presentan una distribución muy desigual o altamente sesgada hacia alguno de los extremos del arreglo. 
+Por ejemplo al tener algo así:
+
+\begin{lstlisting}[language=C]
+int array[] = {1, 2, 3, 4, 5, 1000, 10000};
+\end{lstlisting}
+
+Si se desea buscar el elemento 1000, la fórmula de interpolación estimará inicialmente una posición muy cercana al inicio del arreglo, debido a la gran diferencia 
+entre los últimos elementos y el resto de los datos. Como consecuencia, las estimaciones realizadas serán poco precisas y el algoritmo reducirá muy lentamente el 
+espacio de búsqueda, pudiendo degradarse hasta una complejidad temporal de $O(n)$. \\
+
+El caso promedio ocurre cuando los datos están parcialmente uniformes y sin valores que se escapen demasiado de los demás.   En ese caso la complejidad temporal es 
+de apenas $O(\log (\log n))$. \\
+
+\section{Algoritmos de selección}
+
+\subsection{Quick Select}
+
+\textit{Quick Select} es un algoritmo de selección basado en el paradigma de \textbf{"Divide y Vencerás"}, cuyo objetivo consiste en encontrar el elemento que ocuparía 
+la posición \(k\)-ésima dentro de un arreglo ordenado, sin necesidad de ordenar completamente todos los elementos.  
+
+El algoritmo utiliza una estrategia similar a \textit{Quick Sort}, seleccionando un pivote y reorganizando el arreglo mediante una partición. Luego de realizar la 
+partición, el pivote queda ubicado en su posición definitiva dentro del arreglo ordenado.  
+
+Si la posición del pivote coincide con la posición \(k\) buscada, el algoritmo finaliza inmediatamente. En caso contrario, si \(k\) es menor que la posición del pivote, 
+el algoritmo continúa recursivamente sobre la partición izquierda. Por otro lado, si \(k\) es mayor, la búsqueda continúa únicamente sobre la partición derecha.  
+
+A diferencia de \textit{Quick Sort}, \textit{Quick Select} no necesita procesar ambas particiones recursivamente, sino solamente aquella donde podría encontrarse 
+el elemento buscado.  Debido a esto, el algoritmo suele presentar un mejor rendimiento práctico para problemas de selección.  
+
+El mejor caso ocurre cuando el pivote seleccionado coincide inmediatamente con la posición buscada, por lo que el algoritmo finaliza tras una única partición. 
+En este escenario, la complejidad temporal es $O(n)$, ya que la partición requiere recorrer el arreglo una vez. \\
+
+El caso promedio ocurre cuando las particiones quedan relativamente balanceadas, descartando aproximadamente la mitad de los elementos en cada iteración. La recurrencia aproximada para este caso es:
+
+\[
+T(n) = T\left(\frac{n}{2}\right) + O(n)
+\]
+
+cuya solución corresponde a:
+
+\[
+O(n)
+\]
+
+El peor caso ocurre cuando el pivote genera particiones extremadamente desbalanceadas, dejando un subarreglo de tamaño \(n-1\) y otro de tamaño \(0\). Esto puede suceder, por ejemplo, al utilizar el primer o último elemento como pivote sobre arreglos previamente ordenados. En este caso, la recurrencia queda dada por:
+
+\[
+T(n) = T(n-1) + O(n)
+\]
+
+cuya solución corresponde a una complejidad temporal de:
+
+\[
+O(n^2)
+\]
 

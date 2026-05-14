@@ -147,6 +147,40 @@ static int get_worst_target_id(Deportista *deportistas, int count)
 }
 
 /**
+ * @brief Obtiene el ID del penultimo elemento para el peor caso de interpolation search.
+ * Cambia temporalmente el ID del ultimo elemento para romper la distribucion uniforme.
+ *
+ * @param deportistas Arreglo de deportistas.
+ * @param count Cantidad de elementos.
+ * @return int ID a buscar en el peor caso de interpolation search.
+ */
+static int get_worst_target_id_interpolation(Deportista *deportistas, int count)
+{
+    if(deportistas == NULL || count <= 2) {
+        return -1;
+    }
+
+    int penultimo_id = -1;
+
+    // Obtener el ID del penultimo elemento
+    if(deportistas[count - 2] != NULL) {
+        penultimo_id = deportistas[count - 2]->id;
+    }
+
+    if(penultimo_id < 0) {
+        return -1;
+    }
+
+    // Cambiar el ID del ultimo elemento a 1000 * penultimo_id
+    // para que no haya distribucion uniforme
+    if(deportistas[count - 1] != NULL) {
+        deportistas[count - 1]->id = 1000 * penultimo_id;
+    }
+
+    return penultimo_id;
+}
+
+/**
  * @brief Prepara el arreglo para medir un caso de busqueda.
  *
  * @param deportistas Arreglo a preparar.
@@ -166,6 +200,10 @@ static int prepare_search_case(Deportista *deportistas, int count, SearchAlgorit
     }
 
     if(benchmarkCase == BENCHMARK_CASE_WORST) {
+        // Para interpolation search, usar el penultimo ID y cambiar el ultimo para romper la distribucion uniforme
+        if(algorithm == INTERPOLATION_SEARCH) {
+            return get_worst_target_id_interpolation(deportistas, count);
+        }
         return get_worst_target_id(deportistas, count);
     } else if(benchmarkCase == BENCHMARK_CASE_AVERAGE) {
         if(count > 0) {

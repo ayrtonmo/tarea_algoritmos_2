@@ -16,5 +16,7 @@ int exponential_search_by_id(Deportista *deportistas, int count, int targetId);
 int binary_search_by_score(Deportista *deportistas, int left, int right, float targetScore);
 int binary_search_by_id(Deportista *deportistas, int left, int right, int targetId);
 int binary_search_by_range(Deportista *deportistas, int count, float lowScore, float highScore, int *outLeft, int *outRight);
+int binary_search_by_range_sorted(Deportista *deportistas, int count, float lowScore, float highScore, int *outLeft, int *outRight);
+
 
 #endif

@@ -19,6 +19,7 @@ set key autotitle columnhead
 searchFile = 'db/search_benchmark.csv'
 sortFile   = 'db/sort_benchmark.csv'
 selectFile = 'db/select_benchmark.csv'
+rangeFile  = 'db/range_benchmark.csv'
 
 searchAverageOut   = 'plots/search_average_benchmark.pdf'
 searchWorstOut     = 'plots/search_worst_benchmark.pdf'
@@ -28,10 +29,12 @@ sortWorstOut   = 'plots/sort_worst_benchmark.pdf'
 selectBestOut    = 'plots/select_best_benchmark.pdf'
 selectAverageOut = 'plots/select_average_benchmark.pdf'
 selectWorstOut   = 'plots/select_worst_benchmark.pdf'
+rangeOut	= 'plots/range_benchmark.pdf'
 
 hasSearch = int(system(sprintf("test -f '%s' && echo 1 || echo 0", searchFile)))
 hasSort   = int(system(sprintf("test -f '%s' && echo 1 || echo 0", sortFile)))
 hasSelect = int(system(sprintf("test -f '%s' && echo 1 || echo 0", selectFile)))
+hasRange  = int(system(sprintf("test -f '%s' && echo 1 || echo 0", rangeFile)))
 
 if (!hasSearch) {
 	print sprintf("ERROR: no existe %s", searchFile)
@@ -44,6 +47,11 @@ if (!hasSort) {
 
 if (!hasSelect) {
 	print sprintf("ERROR: no existe %s", selectFile)
+	exit 1
+}
+
+if (!hasRange) {
+	print sprintf("ERROR: no existe %s", rangeFile)
 	exit 1
 }
 
@@ -154,6 +162,20 @@ if (columnCount < 13) {
 	exit 1
 } else {
 	plot for [col=10:13] selectFile using 1:col lw 4 title columnhead(col)
+}
+unset output
+unset logscale y
+
+# Range Search benchmark
+set output rangeOut
+set title 'Binary range search benchmark'
+set logscale y
+columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", rangeFile)))
+if (columnCount < 3) {
+	print sprintf("ERROR: CSV invalido (pocas columnas): %s", rangeFile)
+	exit 1
+} else {
+	plot for [col=2:3] rangeFile using 1:col lw 4 title columnhead(col)
 }
 unset output
 unset logscale y

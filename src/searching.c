@@ -39,20 +39,10 @@ int binary_search_by_id_recursive(Deportista *deportistas,int left,int right,int
 	}
 
 	if(deportistas[mid]->id < targetId) {
-		return binary_search_by_id_recursive(
-			deportistas,
-			mid + 1,
-			right,
-			targetId
-		);
+		return binary_search_by_id_recursive(deportistas, mid + 1, right, targetId);
 	}
 
-	return binary_search_by_id_recursive(
-		deportistas,
-		left,
-		mid - 1,
-		targetId
-	);
+	return binary_search_by_id_recursive(deportistas, left, mid - 1, targetId);
 }
 
 /**
@@ -187,10 +177,11 @@ static int find_last_score_at_most(Deportista *deportistas, int left, int right,
 /**
  * @brief Busca un rango de deportistas cuyo puntaje este entre lowScore y highScore.
  *
- * El arreglo es ordenado por puntaje ascendente usando insertion_sort_deportistas.
- * Luego se aplican dos busquedas binarias modificadas: una para encontrar
- * el primer puntaje mayor o igual al limite inferior y otra para encontrar
- * el ultimo puntaje menor o igual al limite superior.
+ * Esta funcion ordena el arreglo por puntaje ascendente y luego delega
+ * la busqueda a binary_search_by_range_sorted, que asume que los datos
+ * ya se encuentran ordenados. De esta forma, el menu puede usar esta
+ * funcion completa, mientras que los benchmarks pueden medir solo la
+ * busqueda usando la version sorted.
  *
  * @param deportistas Arreglo de deportistas, modificado por la ordenacion.
  * @param count Cantidad de elementos.
@@ -206,31 +197,50 @@ int binary_search_by_range(Deportista *deportistas, int count, float lowScore, f
 		return 0;
 	}
 
-	*outLeft = -1;
-	*outRight = -1;
-
-	if(lowScore > highScore) {
-		float tmp = lowScore;
-		lowScore = highScore;
-		highScore = tmp;
-	}
-
 	insertion_sort_deportistas(deportistas, count, SORT_BY_PUNTAJE, ASCENDING);
 
-	int leftIndex = find_first_score_at_least(deportistas, 0, count - 1, lowScore, -1);
-
-	int rightIndex = find_last_score_at_most(deportistas, 0, count - 1, highScore, -1);
-
-	if(leftIndex == -1 || rightIndex == -1 || leftIndex > rightIndex) {
-		return 0;
-	}
-
-	*outLeft = leftIndex;
-	*outRight = rightIndex;
-
-	return rightIndex - leftIndex + 1;
+	return binary_search_by_range_sorted(deportistas, count, lowScore, highScore, outLeft, outRight);
 }
 
+/**
+ * @brief Busca deportistas dentro de un rango de puntaje en un arreglo ya ordenado (para benchmarking).
+ *
+ * @param deportistas Arreglo de deportistas ordenado por puntaje ascendente.
+ * @param count Cantidad de deportistas.
+ * @param lowScore Limite inferior inclusive.
+ * @param highScore Limite superior inclusive.
+ * @param outLeft Direccion donde se guarda el primer indice encontrado.
+ * @param outRight Direccion donde se guarda el ultimo indice encontrado.
+ * @return int Cantidad de deportistas encontrados dentro del rango.
+ */
+int binary_search_by_range_sorted(Deportista *deportistas, int count, float lowScore, float highScore, int *outLeft, int *outRight)
+{
+    if(deportistas == NULL || count <= 0 || outLeft == NULL || outRight == NULL) {
+        return 0;
+    }
+
+    *outLeft = -1;
+    *outRight = -1;
+
+    if(lowScore > highScore) {
+        float tmp = lowScore;
+        lowScore = highScore;
+        highScore = tmp;
+    }
+
+    int leftIndex = find_first_score_at_least(deportistas, 0, count - 1, lowScore, -1);
+
+    int rightIndex = find_last_score_at_most(deportistas, 0, count - 1, highScore, -1);
+
+    if(leftIndex == -1 || rightIndex == -1 || leftIndex > rightIndex) {
+        return 0;
+    }
+
+    *outLeft = leftIndex;
+    *outRight = rightIndex;
+
+    return rightIndex - leftIndex + 1;
+}
 
 /**
  * @brief Realiza una busqueda por interpolación lineal recursiva por ID.

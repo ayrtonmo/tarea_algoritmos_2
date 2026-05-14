@@ -41,6 +41,7 @@
 #define SEARCH_BENCHMARK_ROUTE "./db/search_benchmark.csv"  /**< Salida de benchmark de busqueda. */
 #define SORT_BENCHMARK_ROUTE "./db/sort_benchmark.csv"      /**< Salida de benchmark de ordenamiento. */
 #define SELECT_BENCHMARK_ROUTE "./db/select_benchmark.csv"
+#define RANGE_BENCHMARK_ROUTE "./db/range_benchmark.csv"
 /** @} */
 
 
@@ -60,9 +61,14 @@ void run_search_benchmark();
 void run_sort_benchmark();
 
 /**
- * @brief Ejecuta el benchmark de Quick Select (algoritmo de selección).
+ * @brief Ejecuta el benchmark de Quick Select (algoritmo de seleccion).
  */
 void run_select_benchmark();
+
+/**
+ * @brief Ejecuta el benchmark de busqueda binaria por rango de puntaje.
+ */
+void run_range_benchmark();
 
 /**
  * @brief Busca un deportista por su ID.

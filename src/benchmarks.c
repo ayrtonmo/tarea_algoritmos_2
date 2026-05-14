@@ -889,3 +889,144 @@ void run_select_benchmark()
         SELECT_BENCHMARK_ROUTE
     );
 }
+
+/**
+ * @brief Ejecuta el benchmark de busqueda binaria por rango de puntaje.
+ *
+ * El arreglo se ordena previamente por puntaje ascendente antes de iniciar
+ * la medicion, de modo que el tiempo medido corresponda solamente a la
+ * busqueda binaria modificada para rangos.
+ */
+void run_range_benchmark()
+{
+    int count = 0;
+    Deportista *baseArray = load_deportistas_array(&count);
+
+    if(baseArray == NULL || count <= 0) {
+        if(baseArray != NULL) {
+            free_deportistas_array(baseArray, count);
+        }
+
+        print_error(ERROR_BENCHMARK_DATA_LOAD_FAILED, NULL);
+        return;
+    }
+
+    int intervals = (count < INTERVAL_SIZE) ? count : INTERVAL_SIZE;
+    int stepSize = count / intervals;
+
+    if(stepSize <= 0) {
+        stepSize = 1;
+    }
+
+    FILE *out = fopen(RANGE_BENCHMARK_ROUTE, "w");
+
+    if(out == NULL) {
+        print_error(ERROR_FILE_CREATE_FAILED, RANGE_BENCHMARK_ROUTE);
+        free_deportistas_array(baseArray, count);
+        return;
+    }
+
+    fprintf(out, "n,promedio_rango_s,peor_rango_s\n");
+
+    printf(BOLD_BLUE "\n=== Range Search benchmark ===\n" RESET);
+    printf(
+        DIM "Archivo: %s | intervalos: %d | repeticiones: %d\n\n" RESET,
+        RANGE_BENCHMARK_ROUTE,
+        intervals,
+        EXPERIMENT_REPEATS
+    );
+
+    printf("n\t| promedio rango(s) | peor rango(s)\n");
+    printf(ASCII_HR "\n");
+
+    printf(HIDE_CURSOR);
+
+    for(int i = 0; i < intervals; i++) {
+        int n = (i == intervals - 1) ? count : (stepSize * (i + 1));
+        double averageTotal = 0.0;
+        double worstTotal = 0.0;
+
+        for(int r = 0; r < EXPERIMENT_REPEATS; r++) {
+            Deportista *workAverage;
+            Deportista *workWorst;
+            clock_t start;
+            clock_t end;
+            volatile int found;
+            int outLeft;
+            int outRight;
+            int innerLoops = 100000;
+
+            progress_update_line(
+                "range",
+                i + 1,
+                intervals,
+                n,
+                r + 1,
+                EXPERIMENT_REPEATS,
+                "promedio"
+            );
+
+            workAverage = clone_deportistas_array(baseArray, n);
+            if(workAverage == NULL) {
+                handle_benchmark_memory_error(baseArray, count, out);
+            }
+
+            insertion_sort_deportistas(workAverage, n, SORT_BY_PUNTAJE, ASCENDING);
+
+            start = clock();
+
+            for(int k = 0; k < innerLoops; k++) {
+                found = binary_search_by_range_sorted(workAverage, n, 40.0f, 80.0f, &outLeft, &outRight);
+            }
+
+            end = clock();
+
+            averageTotal += (double)(end - start) / CLOCKS_PER_SEC / innerLoops;
+
+            (void)found;
+            free_deportistas_array(workAverage, n);
+
+            progress_update_line("range", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "peor");
+
+            workWorst = clone_deportistas_array(baseArray, n);
+            if(workWorst == NULL) {
+                handle_benchmark_memory_error(baseArray, count, out);
+            }
+
+            insertion_sort_deportistas(workWorst, n, SORT_BY_PUNTAJE, ASCENDING);
+
+            start = clock();
+
+            for(int k = 0; k < innerLoops; k++) {
+                found = binary_search_by_range_sorted(workWorst, n, MAX_SCORE + 1.0f, MAX_SCORE + 2.0f, &outLeft, &outRight);
+            }
+
+            end = clock();
+
+            worstTotal += (double)(end - start) / CLOCKS_PER_SEC / innerLoops;
+
+            (void)found;
+            free_deportistas_array(workWorst, n);
+        }
+
+        averageTotal /= EXPERIMENT_REPEATS;
+        worstTotal /= EXPERIMENT_REPEATS;
+
+        fprintf( out, "%d,%.10f,%.10f\n", n, averageTotal, worstTotal );
+
+        progress_clear_line();
+
+        printf( "%d\t| %.10f | %.10f\n", n, averageTotal, worstTotal );
+    }
+
+    progress_clear_line();
+    printf(SHOW_CURSOR);
+
+    fclose(out);
+    free_deportistas_array(baseArray, count);
+
+    printf(
+        BG_GREEN "\nBenchmark de busqueda por rango guardado con exito en %s\n" RESET,
+        RANGE_BENCHMARK_ROUTE
+    );
+}

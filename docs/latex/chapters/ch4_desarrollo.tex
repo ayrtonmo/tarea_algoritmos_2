@@ -16,3 +16,137 @@ Cada parámetro permite almacenar información, la cual puede ser utilizada para
 \subsection{Generación y carga de datos}
 La generación de datos de los parámetros asociados a deportistas se realizó mediante distintas funciones, las cuales permiten crear u obtener estos registros de manera pseudoaleatoria. La generación de un nombre se realizó permitiendo seleccionar aleatoriamente letras de un conjunto predefinido, escogiendo un tamaño de 3 a 8 caracteres. Para el equipo, se seleccionó aleatoriamente entre un conjunto específico de equipos de Esports. El ID se generó en forma incremental, asegurando la unicidad de cada registro. Por otro lado, el puntaje y la cantidad de competencias se generaron utilizando funciones de generación de números aleatorios dentro de rangos predefinidos. Esta metodología permitió crear un conjunto de datos variado y representativo para probar las funcionalidades del sistema. Posterior a la creación de los registros, estos se desordenaron utilizando el algoritmo de Fisher-Yates para garantizar que los datos no se encuentren en un orden específico, lo que es fundamental para evaluar correctamente el desempeño de los algoritmos de ordenamiento y búsqueda implementados. Finalmente, los registros generados se almacenaron en un archivo CSV, lo que facilita su posterior carga y manipulación dentro del programa.
 
+\section{Algoritmos de ordenamiento}
+
+Existen muchísimos algoritmos de ordenamiento, desde algunos muy eficientes, que pueden llegar a ser de una complejidad temporal de apenas $O(n)$, 
+como \textit{Radix Sort}, hasta algunos extremadamente ineficientes, que pueden llegar incluso a ser de $O(n \times n!)$, como lo es el caso de 
+\textit{Bogo Sort}, pero en este trabajo nos centraremos principalmente en \textit{Merge Sort} y \textit{Quick Sort}, que son algoritmos relativamente
+eficientes y que emplean el principio de \textbf{"Divide y Vencerás"}. \\
+
+\subsection{Merge Sort}
+
+\textit{Merge Sort}, también conocido como "Ordenamiento por Mezcla", es un algoritmo de ordenamiento recursivo, que en cada paso va dividiendo el 
+arreglo en 2 subarreglos de aproximadamente la mitad del tamaño anterior, y eso lo hace hasta que todos los subarreglos sean de tamaño 1. Cuando eso sucede,
+se comienzan a combinar pares de subarreglos adyacentes, recorriéndolos linealmente para fusionarlos en el orden correcto, hasta que finalmente todo el 
+arreglo queda ordenado. \\
+
+En base al principio en el que se fundamenta \textit{Merge Sort}, es posible deducir su complejidad temporal mediante la siguiente ecuación de recurrencia: \\
+
+$T(n) = 2 T(\frac{n}{2}) + O(n)$ \\
+
+Esto se debe a que el problema se divide recursivamente en 2 subproblemas de tamaño $n/2$, mientras que el costo adicional corresponde al proceso de 
+fusión de los subarreglos, el cual requiere recorrer linealmente los elementos para ubicarlos en el orden correcto, por lo que dicho costo es de 
+complejidad lineal. \\
+
+Para resolver la ecuación de recurrencia, se puede emplear el método de iteración. Considerando una constante $k$ para representar el costo lineal, se tiene: \\
+
+$T(n) = 2 T(\frac{n}{2}) + kn$ \\
+
+A partir de esto, la expresión equivalente para $T(\frac{n}{2})$ sería: \\
+
+$T(\frac{n}{2}) = 2 T(\frac{n}{4}) + k(\frac{n}{2})$ \\
+
+Entonces, reemplazando en la ecuación original, se obtiene: \\
+
+$T(n) = 2 \left( 2 T(\frac{n}{4}) + k(\frac{n}{2}) \right) + kn$ \\
+
+Simplificando: \\
+
+$T(n) = 4T(\frac{n}{4}) + 2kn$ \\
+
+Ahora, realizando otra iteración, se tiene que: \\
+
+$T(\frac{n}{4}) = 2 T(\frac{n}{8}) + k(\frac{n}{4})$ \\
+
+Reemplazando nuevamente: \\
+
+$T(n) = 4 \left( 2T(\frac{n}{8}) + k(\frac{n}{4}) \right) + 2kn$ \\
+
+$T(n) = 8T(\frac{n}{8}) + 3kn$ \\
+
+Continuando de esta forma, se puede generalizar que: \\
+
+$T(n) = 2T(\frac{n}{2}) + kn = 4T(\frac{n}{4}) + 2kn = 8T(\frac{n}{8}) + 3kn = 2^i T(\frac{n}{2^i}) + ikn$ \\
+
+La recursión finaliza cuando se alcanza el caso base, es decir, cuando los subarreglos tienen tamaño 1. Por lo tanto, debe cumplirse que: \\
+
+$\frac{n}{2^i} = 1$ \\
+
+Despejando: \\
+
+$i = \log_{2}(n)$ \\
+
+Reemplazando esto en la expresión general obtenida anteriormente: \\
+
+$T(n) = 2^{\log_{2}(n)} T(1) + \log_{2}(n)kn$ \\
+
+Como $2^{\log_{2}(n)} = n$, entonces: \\
+
+$T(n) = nT(1) + kn\log_{2}(n)$ \\
+
+Finalmente, considerando que $T(1)$ y $k$ son constantes, se concluye que: \\
+
+$T(n) \in O(n \log n)$ \\
+
+Por lo tanto, \textit{Merge Sort} posee complejidad temporal $O(n \log n)$ tanto en el mejor caso, como en el caso promedio y peor caso, ya que el arreglo 
+siempre se divide de manera uniforme, independientemente del orden inicial de los elementos. \\
+
+\subsection{Merge-Insertion Sort}
+
+\textit{Merge-Insertion Sort} corresponde a una variante optimizada de \textit{Merge Sort}, cuyo objetivo es reducir el overhead recursivo que se produce al 
+trabajar con subarreglos muy pequeños. \\
+
+La idea principal consiste en que, cuando los subarreglos alcanzan un tamaño suficientemente pequeño, en lugar de continuar dividiéndolos recursivamente, 
+se utiliza \textit{Insertion Sort} para ordenarlos directamente. \\
+
+Esto se hace debido a que \textit{Insertion Sort}, a pesar de poseer complejidad $O(n^2)$ en el peor caso, tiene un rendimiento muy eficiente para arreglos 
+de tamaño reducido, ya que posee un overhead muy bajo y además aprovecha favorablemente arreglos parcialmente ordenados. \\
+
+De esta manera, \textit{Merge-Insertion Sort} busca combinar las ventajas de ambos algoritmos: la eficiencia asintótica de \textit{Merge Sort} para arreglos 
+grandes, junto con la simplicidad y rapidez de \textit{Insertion Sort} en subarreglos pequeños. \\
+
+En términos de complejidad asintótica, esta variante sigue perteneciendo a $O(n \log n)$, aunque en la práctica puede presentar mejoras de rendimiento 
+respecto a la versión clásica de \textit{Merge Sort}, dependiendo del umbral utilizado para decidir cuándo aplicar \textit{Insertion Sort}, que es uno de
+los aspectos que se analizará en el presente trabajo. \\
+
+\subsection{Quick Sort}
+
+\textit{Quick Sort} es un algoritmo que consiste en seleccionar un pivote dentro del arreglo, y mediante comparaciones e intercambios al recorrer el arreglo, 
+ir colocando los elementos que sean menores al pivote, a su izquierda, y los que sean mayores, a su derecha.  Y luego con las particiones (subarreglos) que 
+hayan quedado, volver a hacer lo mismo, hasta llegar al caso trivial que es cuando las particiones llegan a tener a lo más un elemento. \\
+
+Existen varias formas de seleccionar el pivote en este algoritmo.  Estas son:  \\
+
+\begin{itemize}
+    \item El primer elemento.
+    \item El último elemento.
+    \item Un elemento aleatorio.
+    \item Mediante mediana de tres.
+\end{itemize}
+
+El mejor caso ocurre cuando el límite que separan las 2 particiones siempre ocurre prácticamente por la mitad.  En ese caso, la complejidad temporal del
+algoritmo viene dada por la recurrencia: \\
+
+$T(n) = 2T(\frac{n}{2}) + O(n)$ \\
+
+Esta recurrencia, es la misma que se obtuvo para \textit{Merge Sort}, por lo cual el mejor caso de \textit{Quick Sort} es el mismo que para \textit{Merge Sort}, o sea
+$O(n \log(n))$. \\
+
+El caso promedio ocurre cuando las particiones de \textit{Quick Sort}, quedan un poquito desequilibradas pero no demasiado.  Un caso promedio aproximado podría ser: \\
+
+$T(n) = T(\frac{n}{3}) + T(\frac{2n}{3}) + O(n)$ \\
+
+Esta recurrencia también tiene una solución $T(n) \in O(n \log(n))$, por lo que la complejidad temporal para \textit{Quick Sort} en caso promedio también es 
+$O(n \log(n))$. \\
+
+El peor caso ocurre por ejemplo cuando el arreglo está ya ordenado y se utiliza al primer o último elemento del arreglo como pivote, ya que en esos casos, siempre
+la partición quedará extremadamente desequilibrada, con 1 elemento en uno de los lados, y los otros n-1 del otro lado, por lo que la recurrencia para ese caso sería: \\
+
+$T(n) = T(n-1) + O(n)$ \\
+
+Resolviendo esa recurrencia, se llega a que en el peor caso, \textit{Quick Sort} tiene una complejidad temporal de $O(n^2)$.
+
+
+
+
+

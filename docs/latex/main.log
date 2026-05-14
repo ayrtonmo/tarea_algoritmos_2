@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.31)  13 MAY 2026 04:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.31)  13 MAY 2026 23:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -8,8 +8,8 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
 (/usr/share/texlive/texmf-dist/tex/latex/base/report.cls
 Document Class: report 2023/05/17 v1.4n Standard LaTeX document class
-(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo
-File: size12.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count187
 \c@chapter=\count188
@@ -1174,6 +1174,10 @@ Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
 Package csquotes Info: Redefining alias 'default' -> 'spanish'.
 
+
+LaTeX Warning: Unused global option(s):
+    [11.5pt].
+
 No file main.aux.
 \openout1 = `main.aux'.
 
@@ -1214,12 +1218,12 @@ LaTeX Font Info:    ... okay on input line 4.
 * \topmargin=-37.0pt
 * \headheight=12.0pt
 * \headsep=25.0pt
-* \topskip=12.0pt
+* \topskip=10.0pt
 * \footskip=30.0pt
-* \marginparwidth=44.0pt
-* \marginparsep=10.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
 * \columnsep=10.0pt
-* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
 * \hoffset=0.0pt
 * \voffset=0.0pt
 * \mag=1000
@@ -1305,7 +1309,17 @@ Package pdftex.def Info: Fig/logo_depto.png  used on input line 6.
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/
 dvips/lm/lm-ec.enc} <./Fig/logo_umag.png> <./Fig/logo_depto.png>]) (./frontmatt
-er/abstract.tex) [2
+er/abstract.tex
+Underfull \hbox (badness 10000) in paragraph at lines 3--6
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 7--12
+
+ []
+
+) [2
 
 
 
@@ -1352,12 +1366,11 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.38     \item \textit
-                      {Quick Select}. [1
+l.46 
+      [1
 
 
-]) (./chapters/ch2_objetivos.tex
-[2]
+]) (./chapters/ch2_objetivos.tex [2]
 Cap\'{\i }tulo 2.
 ) (./chapters/ch3_marco_teorico.tex [3
 
@@ -1387,11 +1400,11 @@ LaTeX Font Info:    Trying to load font information for OMX+lmex on input line
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 5.
+(Font)              <10> on input line 5.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 5.
+(Font)              <7> on input line 5.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 5.
+(Font)              <5> on input line 5.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 5.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -1436,10 +1449,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 27--28
 
  []
 
-[4
 
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/
-dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}]
 Underfull \hbox (badness 10000) in paragraph at lines 29--30
 
  []
@@ -1464,7 +1474,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 37--38
 
  []
 
+[4
 
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/
+dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/sha
+re/texmf/fonts/enc/dvips/lm/lm-mathex.enc}]
 Underfull \hbox (badness 10000) in paragraph at lines 39--40
 
  []
@@ -1529,7 +1543,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 63--64
 
  []
 
-[5{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}]
+
 Underfull \hbox (badness 10000) in paragraph at lines 65--66
 
  []
@@ -1564,7 +1578,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 80--82
 
  []
 
-
+[5]
 Underfull \hbox (badness 10000) in paragraph at lines 83--85
 
  []
@@ -1584,18 +1598,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 92--95
 
  []
 
-[6]) (./chapters/ch4_desarrollo.tex [7]
+) (./chapters/ch4_desarrollo.tex [6]
 Cap\'{\i }tulo 4.
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 8
 .
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [8
+)) (./chapters/ch5_conclusion.tex
+[7
 
-]) (./chapters/ch5_conclusion.tex
-[9]
+]
 Cap\'{\i }tulo 5.
-) (./chapters/ch6_anexos.tex [10
+) (./chapters/ch6_anexos.tex [8
 
 ]
 Cap\'{\i }tulo 6.
@@ -1603,7 +1617,7 @@ Cap\'{\i }tulo 6.
 
 LaTeX Warning: Empty bibliography on input line 46.
 
-[11
+[9
 
 ] (./main.aux
 LaTeX Info: Redefining \sptext on input line 12.
@@ -1636,25 +1650,26 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 38352 strings out of 474222
- 786825 string characters out of 5748733
- 1932975 words of memory out of 5000000
- 59997 multiletter control sequences out of 15000+600000
- 605010 words of font info for 65 fonts, out of 8000000 for 9000
+ 38354 strings out of 474222
+ 786831 string characters out of 5748733
+ 1933975 words of memory out of 5000000
+ 59998 multiletter control sequences out of 15000+600000
+ 604674 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  89i,6n,117p,1312b,1847s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/ty
-pe1/public/lm/lmcsc10.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></
-usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf/fonts/type1/
-public/lm/lmmi6.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/sha
-re/texmf/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/l
-m/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/f
-onts/type1/public/lm/lmri12.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.
-pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb>
-Output written on main.pdf (15 pages, 556312 bytes).
+</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/ty
+pe1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmcsc10.pfb></
+usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/
+public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi5.pfb></usr/sh
+are/texmf/fonts/type1/public/lm/lmmi7.pfb></usr/share/texmf/fonts/type1/public/
+lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb></usr/share/texm
+f/fonts/type1/public/lm/lmr5.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.p
+fb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/t
+ype1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb>
+Output written on main.pdf (13 pages, 615129 bytes).
 PDF statistics:
- 177 PDF objects out of 1000 (max. 8388607)
+ 179 PDF objects out of 1000 (max. 8388607)
  128 compressed objects within 2 object streams
- 35 named destinations out of 1000 (max. 500000)
+ 33 named destinations out of 1000 (max. 500000)
  23 words of extra memory for PDF output out of 10000 (max. 10000000)
 

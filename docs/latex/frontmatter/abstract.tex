@@ -1,2 +1,17 @@
 \chapter*{Resumen}
-Este informe presenta el desarrollo de un sistema en lenguaje C para la gestión de información de deportistas, capaz de generar, almacenar, ordenar y buscar registros en archivos CSV. Para ello, se implementaron los algoritmos de ordenamiento Bubble Sort optimizado, Insertion Sort, Selection Sort optimizado y Cocktail Shaker Sort, junto con los algoritmos de búsqueda secuencial y búsqueda binaria iterativa. Además, se realizaron experimentos para analizar el comportamiento teórico y empírico de estos algoritmos en distintos tamaños de entrada y en diferentes casos de ejecución. Los resultados obtenidos permitieron comparar su rendimiento mediante benchmarks y gráficos, facilitando la comprensión de sus diferencias en eficiencia y complejidad.
+
+Este informe presenta el desarrollo de un sistema en lenguaje C para la gestión de información de deportistas, capaz de generar, almacenar, ordenar 
+y buscar registros en archivos CSV. El proyecto se basa en la estrategia de \textit{Divide y Vencerás}, implementando y analizando distintos algoritmos 
+de ordenamiento, búsqueda y selección.  \\
+
+En particular, se implementaron los algoritmos de ordenamiento \textit{Merge Sort} en su versión clásica y optimizada mediante \textit{Insertion Sort}, 
+además de \textit{Quick Sort} utilizando el esquema de partición de Lomuto con distintas variantes de pivote: último elemento, primer elemento, pivote 
+aleatorio y mediana de tres.  Asimismo, se desarrollaron algoritmos de búsqueda como búsqueda binaria recursiva, búsqueda exponencial y búsqueda por 
+interpolación, junto con una variante de búsqueda binaria para rangos. También se implementó el algoritmo de selección \textit{Quick Select} para obtener 
+el k-ésimo mejor deportista según puntaje.  \\
+
+El sistema incorpora funcionalidades prácticas como ordenamiento de deportistas según distintos criterios, búsqueda eficiente de registros, generación de 
+rankings y obtención del mejor deportista en una posición determinada. Además, se realizaron benchmarks experimentales para evaluar el comportamiento de los 
+algoritmos en distintos tamaños de entrada y escenarios de ejecución, considerando mejor caso, peor caso y caso promedio.  Los resultados obtenidos
+permitieron comparar empíricamente el rendimiento de las distintas implementaciones y variantes estudiadas, contrastando además su comportamiento con el 
+análisis teórico de complejidad temporal.

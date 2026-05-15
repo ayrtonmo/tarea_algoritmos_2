@@ -100,7 +100,12 @@ Por lo tanto, \textit{Merge Sort} posee complejidad temporal $O(n \log n)$ tanto
 siempre se divide de manera uniforme, independientemente del orden inicial de los elementos. \\
 
 \subsubsection{Implementacion Merge Sort}
-En este proyecto, la implementacion de merge sort permite la busqueda de deportistas por distintos parametros, como el ID, el puntaje, la cantidad de competencias, el nombre o el equipo.  Para esto, se implemento una funcion de comparacion que recibe un parametro adicional que indica el criterio de ordenamiento a utilizar.  De esta manera, se puede reutilizar la misma implementacion de merge sort para ordenar por distintos parametros, simplemente cambiando la logica de comparacion segun el criterio seleccionado.  Ademas, se implemento la opcion de ordenar tanto en forma ascendente como descendente, lo que se logra modificando la logica de comparacion para invertir el orden cuando se desea ordenar de manera descendente. \\
+En este proyecto, la implementación de \textit{Merge Sort} permite la búsqueda de deportistas por distintos parámetros, como el ID, el puntaje, la cantidad 
+de competencias, el nombre o el equipo.  Para esto, se implementó una función de comparación que recibe un parámetro adicional que indica el criterio de 
+ordenamiento a utilizar.  De esta manera, se puede reutilizar la misma implementación de \textit{Merge Sort} para ordenar por distintos parámetros, simplemente 
+cambiando la lógica de comparación segun el criterio seleccionado.  Además, se implementó la opcion de ordenar tanto en forma ascendente como descendente, 
+lo que se logra modificando la logica de comparacion para invertir el orden cuando se desea ordenar de manera descendente. \\
+
 \newpage
 
 \subsection{Merge-Insertion Sort}
@@ -122,7 +127,10 @@ respecto a la versión clásica de \textit{Merge Sort}, dependiendo del umbral u
 los aspectos que se analizará en el presente trabajo. \\
 
 \subsubsection{Implementacion Merge-Insertion Sort}
-Al igual que con la implementacion de merge sort, la implementacion de merge-insertion sort permite ordenar por distintos parametros, utilizando la misma funcion de comparacion y eleccion del sentido del ordenamiento. Ademas de esto se permite la entrega por paso de parametro del treshhold o criterio para utilizar insertion sort en sub-arreglos.  \\
+
+Al igual que con la implementacion de \textit{Merge Sort}, la implementacion de merge-insertion sort permite ordenar por distintos parametros, utilizando la 
+misma funcion de comparacion y eleccion del sentido del ordenamiento. Ademas de esto se permite la entrega por paso de parametro del treshhold o criterio para 
+utilizar insertion sort en sub-arreglos.  \\
 
 \subsection{Quick Sort}
 
@@ -164,7 +172,10 @@ Resolviendo esa recurrencia, se llega a que en el peor caso, \textit{Quick Sort}
 Un ejemplo de peor caso, es cuando el arreglo ya está ordenado y el método de seleccionar el pivote, es el primer elemento, o el último. \\
 
 \subsubsection{Implementacion Quick Sort}
-Para la implementacion de Quick Sort se decidio utilizar el metodo de seleccion de pivote de lomuto, el cual selecciona el ultimo elemento del arreglo como pivote. Esto eleccion se realizo teniendo en cuenta la facilidad de implementacion y la eficiencia que presenta en arreglos desordenados. Al igual que los algoritmos de ordenamiento anteriores, se implemento la opcion de ordenar por distintos parametros, utilizando la misma funcion de comparacion y eleccion del sentido del ordenamiento.
+Para la implementacion de Quick Sort se decidio utilizar el metodo de seleccion de pivote de lomuto, el cual selecciona el ultimo elemento del arreglo como pivote.  
+Esto eleccion se realizo teniendo en cuenta la facilidad de implementacion y la eficiencia que presenta en arreglos desordenados. Al igual que los algoritmos de 
+ordenamiento anteriores, se implemento la opcion de ordenar por distintos parametros, utilizando la misma funcion de comparacion y eleccion del sentido del ordenamiento.
+
 \section{Algoritmos de búsqueda}
 
 \subsection{Búsqueda binaria recursiva}
@@ -185,7 +196,9 @@ espacio de búsqueda aproximadamente a la mitad en cada paso, el número de comp
 Por lo tanto, tanto el caso promedio como el peor caso presentan una complejidad temporal de $O(\log n)$
 
 \subsubsection{Implementacion Busqueda Binaria}
-Para la implementacion de la busqueda binaria recursiva, se decidio utilizar una funcion que requiere el arreglo de deportistas, el elemento a buscar (en el caso de los algoritmos de busqueda, este corresponde a un ID), el indicie de inicio y el indice de fin del rango de busqueda.  La funcion se llama a si misma recursivamente, ajustando los indices de inicio y fin segun corresponda, hasta encontrar el elemento buscado o hasta que el rango de busqueda se vuelva invalido.
+Para la implementacion de la busqueda binaria recursiva, se decidio utilizar una funcion que requiere el arreglo de deportistas, el elemento a buscar (en el caso 
+de los algoritmos de busqueda, este corresponde a un ID), el indicie de inicio y el indice de fin del rango de busqueda.  La funcion se llama a si misma recursivamente, 
+ajustando los indices de inicio y fin segun corresponda, hasta encontrar el elemento buscado o hasta que el rango de busqueda se vuelva invalido.
 
 \subsection{Búsqueda exponencial}
 
@@ -220,7 +233,10 @@ rápido el intervalo donde podría encontrarse el dato.  Posteriormente, la bús
 la complejidad temporal promedio de la búsqueda exponencial es $O(\log n)$. \\
 
 \subsubsection{Implementacion Busqueda Exponencial}
-En el caso de la implementacion de la busqueda exponencial, se decidio utilizar una funcion que recibe el arreglo de deportistas, el elemento a buscar (ID), y el tamaño del arreglo.  La funcion comienza revisando el primer elemento del arreglo, y luego va incrementando el indice de manera exponencial, hasta encontrar un elemento mayor que el buscado o hasta que el indice sobrepase el tamaño del arreglo.  Luego, se determina el rango acotado para aplicar busqueda binaria, y se llama a la funcion de busqueda binaria recursiva para realizar la busqueda dentro de dicho rango.
+En el caso de la implementacion de la busqueda exponencial, se decidio utilizar una funcion que recibe el arreglo de deportistas, el elemento a buscar (ID), y el 
+tamaño del arreglo.  La funcion comienza revisando el primer elemento del arreglo, y luego va incrementando el indice de manera exponencial, hasta encontrar un 
+elemento mayor que el buscado o hasta que el indice sobrepase el tamaño del arreglo.  Luego, se determina el rango acotado para aplicar busqueda binaria, y se 
+llama a la funcion de busqueda binaria recursiva para realizar la busqueda dentro de dicho rango.
 
 
 \subsection{Búsqueda por interpolación}
@@ -255,7 +271,14 @@ El caso promedio ocurre cuando los datos están parcialmente uniformes y sin val
 de apenas $O(\log (\log n))$. \\
 
 \subsubsection{Implementacion Busqueda por Interpolacion}
-Para la implementacion de la busqueda por interpolacion, se decidio utilizar una funcion que reciba el arreglo de deportistas, el indice de inicial y final del rango de busqueda y el elemento a buscar (ID).  La funcion calcula la posicion estimada utilizando la formula de interpolacion, y luego compara el elemento ubicado en dicha posicion con el valor buscado.  Si ambos coinciden, la busqueda finaliza exitosamente.  En caso contrario, si el elemento en la posicion estimada es mayor que el valor buscado, se ajusta el indice final del rango de busqueda a la posicion estimada menos uno.  Por otro lado, si el elemento en la posicion estimada es menor que el valor buscado, se ajusta el indice inicial del rango de busqueda a la posicion estimada mas uno.  Luego, se llama recursivamente a la funcion de busqueda por interpolacion con los indices ajustados, hasta encontrar el elemento o hasta que el rango de busqueda se vuelva invalido. Es importante destacar que para utilizar este algoritmo, es necesario que el arreglo se encuentre previamente ordenado, ya que la formula de interpolacion se basa en la suposicion de que los datos estan distribuidos de manera uniforme.  Si el arreglo no esta ordenado, la formula de interpolacion no sera precisa y el algoritmo no funcionara correctamente. 
+Para la implementacion de la busqueda por interpolacion, se decidio utilizar una funcion que reciba el arreglo de deportistas, el indice de inicial y final del 
+rango de busqueda y el elemento a buscar (ID).  La funcion calcula la posicion estimada utilizando la formula de interpolacion, y luego compara el elemento ubicado 
+en dicha posicion con el valor buscado.  Si ambos coinciden, la busqueda finaliza exitosamente.  En caso contrario, si el elemento en la posicion estimada es mayor 
+que el valor buscado, se ajusta el indice final del rango de busqueda a la posicion estimada menos uno.  Por otro lado, si el elemento en la posicion estimada es 
+menor que el valor buscado, se ajusta el indice inicial del rango de busqueda a la posicion estimada mas uno.  Luego, se llama recursivamente a la funcion de 
+busqueda por interpolacion con los indices ajustados, hasta encontrar el elemento o hasta que el rango de busqueda se vuelva invalido. Es importante destacar 
+que para utilizar este algoritmo, es necesario que el arreglo se encuentre previamente ordenado, ya que la formula de interpolacion se basa en la suposicion de que 
+los datos estan distribuidos de manera uniforme.  Si el arreglo no esta ordenado, la formula de interpolacion no sera precisa y el algoritmo no funcionara correctamente. 
 
 \section{Algoritmos de selección}
 
@@ -285,9 +308,15 @@ $T(n) = T\left(\frac{n}{2}\right) + O(n)$, cuya solución corresponde a $O(n)$ \
 
 
 \subsubsection{Implementacion Quick Select}
-Para la implementacion de Quick Select, se decidio permitir la eleccion del tipo de pivote, estando disponible el primer elemento, el ultimo elemento, un elemento aleatorio o la mediana de tres.  Esta decision se tomo para poder comparar el comportamiento del algoritmo bajo distintos escenarios experimentales y reutilizar una misma estructura de particion.  Al igual que con los algoritmos de ordenamiento, se implemento la opcion de seleccionar por distintos parametros, utilizando una funcion de comparacion adaptada al criterio elegido.
+Para la implementacion de Quick Select, se decidio permitir la eleccion del tipo de pivote, estando disponible el primer elemento, el ultimo elemento, un elemento 
+aleatorio o la mediana de tres.  Esta decision se tomo para poder comparar el comportamiento del algoritmo bajo distintos escenarios experimentales y reutilizar una 
+misma estructura de particion.  Al igual que con los algoritmos de ordenamiento, se implemento la opcion de seleccionar por distintos parametros, utilizando una 
+funcion de comparacion adaptada al criterio elegido.
 
-Ademas de esto, la implementacion recibe el indice inicial y el indice final del rango de busqueda, de forma similar a una busqueda recursiva sobre subarreglos.  Luego de particionar el arreglo, la funcion compara la posicion del pivote con la posicion buscada; si coincide, se devuelve el elemento, y si no, se continua recursivamente solo sobre la mitad donde puede encontrarse el resultado.  De esta manera, Quick Select evita ordenar completamente el arreglo y mantiene el enfoque de dividir el problema en subproblemas mas pequeños hasta encontrar el elemento requerido.
+Ademas de esto, la implementacion recibe el indice inicial y el indice final del rango de busqueda, de forma similar a una busqueda recursiva sobre subarreglos.  
+Luego de particionar el arreglo, la funcion compara la posicion del pivote con la posicion buscada; si coincide, se devuelve el elemento, y si no, se continua 
+recursivamente solo sobre la mitad donde puede encontrarse el resultado.  De esta manera, Quick Select evita ordenar completamente el arreglo y mantiene el enfoque 
+de dividir el problema en subproblemas mas pequeños hasta encontrar el elemento requerido.
 
 \newpage
 \section{Benchmarks, Generacion de resultados y graficos}
@@ -300,3 +329,24 @@ En el caso del benchmark de merge-insertion, se evaluaron distintos treshholds p
 
 \subsection{Generacion de graficos}
 Para generar los graficos, se utilizo gnuplot, cargando los datos de los benchmark previamente alamcenados en CSV. Creando asi graficos comparativos que permiten visualizar la evolucion del tiempo de ejecucion de cada algoritmo en funcion del tamaño de entrada, y comparando su comportamiento en los casos mejor, promedio y peor.  Ademas, se generaron graficos con distintas escalas (lineal y logaritmica) para facilitar la visualizacion de las diferencias de rendimiento entre los algoritmos, especialmente en casos donde las diferencias pueden ser significativas.  De esta manera, se busca obtener una representacion visual clara y efectiva del comportamiento de cada algoritmo bajo distintas condiciones experimentales.
+
+\section{Análisis de Resultados}
+
+A continación, se mostrarán los distintos gráficos obtenidos luego de ejecutar los programas y se analizará el rendimiento y la complejidad algorítimica de cada
+uno de los algoritmos implementados.
+
+\subsection{Comparación de algoritmos de ordenamiento}
+
+\subsubsection{Análisis de mejor caso}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../Fig/sort_best_benchmark.pdf}
+    \caption{Benchmark de algoritmos de ordenamiento en caso promedio.}
+    \label{fig:sort_best}
+\end{figure}
+
+\subsubsection{Análisis de caso promedio}
+
+
+\subsubsection{Análisis de peor caso}

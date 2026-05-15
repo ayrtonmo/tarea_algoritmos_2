@@ -262,46 +262,33 @@ Para la implementacion de la busqueda por interpolacion, se decidio utilizar una
 \subsection{Quick Select}
 
 \textit{Quick Select} es un algoritmo de selección basado en el paradigma de \textbf{"Divide y Vencerás"}, cuyo objetivo consiste en encontrar el elemento que ocuparía 
-la posición \(k\)-ésima dentro de un arreglo ordenado, sin necesidad de ordenar completamente todos los elementos.  
+la posición \(k\)-ésima dentro de un arreglo ordenado, sin necesidad de ordenar completamente todos los elementos. \\
 
 El algoritmo utiliza una estrategia similar a \textit{Quick Sort}, seleccionando un pivote y reorganizando el arreglo mediante una partición. Luego de realizar la 
-partición, el pivote queda ubicado en su posición definitiva dentro del arreglo ordenado.  
+partición, el pivote queda ubicado en su posición definitiva dentro del arreglo ordenado. \\
 
 Si la posición del pivote coincide con la posición \(k\) buscada, el algoritmo finaliza inmediatamente. En caso contrario, si \(k\) es menor que la posición del pivote, 
-el algoritmo continúa recursivamente sobre la partición izquierda. Por otro lado, si \(k\) es mayor, la búsqueda continúa únicamente sobre la partición derecha.  
+el algoritmo continúa recursivamente sobre la partición izquierda. Por otro lado, si \(k\) es mayor, la búsqueda continúa únicamente sobre la partición derecha. \\
 
 A diferencia de \textit{Quick Sort}, \textit{Quick Select} no necesita procesar ambas particiones recursivamente, sino solamente aquella donde podría encontrarse 
-el elemento buscado.  Debido a esto, el algoritmo suele presentar un mejor rendimiento práctico para problemas de selección.  
+el elemento buscado.  Debido a esto, el algoritmo suele presentar un mejor rendimiento práctico para problemas de selección. \\
 
-El mejor caso ocurre cuando el pivote seleccionado coincide inmediatamente con la posición buscada, por lo que el algoritmo finaliza tras una única partición. 
-En este escenario, la complejidad temporal es $O(n)$, ya que la partición requiere recorrer el arreglo una vez. \\
+El peor caso ocurre cuando el pivote genera particiones extremadamente desbalanceadas, dejando un subarreglo de tamaño \(n-1\) y otro de tamaño \(0\).  Esto puede 
+suceder, por ejemplo, al utilizar el primer o último elemento como pivote sobre arreglos previamente ordenados.  En este caso, la recurrencia queda dada por: \\
 
-El caso promedio ocurre cuando las particiones quedan relativamente balanceadas, descartando aproximadamente la mitad de los elementos en cada iteración. La recurrencia aproximada para este caso es:
+$T(n) = T(n-1) + O(n)$, cuya solución corresponde a una complejidad temporal de $O(n^2)$. \\
 
-\[
-T(n) = T\left(\frac{n}{2}\right) + O(n)
-\]
+El caso promedio ocurre cuando las particiones quedan relativamente balanceadas, descartando aproximadamente la mitad de los elementos en cada iteración. La 
+recurrencia aproximada para este caso es: \\
 
-cuya solución corresponde a:
+$T(n) = T\left(\frac{n}{2}\right) + O(n)$, cuya solución corresponde a $O(n)$ \\
 
-\[
-O(n)
-\]
-
-El peor caso ocurre cuando el pivote genera particiones extremadamente desbalanceadas, dejando un subarreglo de tamaño \(n-1\) y otro de tamaño \(0\). Esto puede suceder, por ejemplo, al utilizar el primer o último elemento como pivote sobre arreglos previamente ordenados. En este caso, la recurrencia queda dada por:
-
-\[
-T(n) = T(n-1) + O(n)
-\]
-
-cuya solución corresponde a una complejidad temporal de:
-
-\[
-O(n^2)
-\]
 
 \subsubsection{Implementacion Quick Select}
-Para la implementacion de Quick Select, se decidio utilizar permitir la eleccion del tipo de pivote, estando disponible; el primer elemento, el ultimo elemento, un elemento aleatorio o la mediana de tres.  Al igual que con los algoritmos de ordenamiento, se implemento la opcion de seleccionar por distintos parametros, utilizando una funcion de comparacion adaptada, se requiere tambien el indice de los elementos del inicio y el fin del rango de busqueda.
+Para la implementacion de Quick Select, se decidio permitir la eleccion del tipo de pivote, estando disponible el primer elemento, el ultimo elemento, un elemento aleatorio o la mediana de tres.  Esta decision se tomo para poder comparar el comportamiento del algoritmo bajo distintos escenarios experimentales y reutilizar una misma estructura de particion.  Al igual que con los algoritmos de ordenamiento, se implemento la opcion de seleccionar por distintos parametros, utilizando una funcion de comparacion adaptada al criterio elegido.
 
-\subsection{}
+Ademas de esto, la implementacion recibe el indice inicial y el indice final del rango de busqueda, de forma similar a una busqueda recursiva sobre subarreglos.  Luego de particionar el arreglo, la funcion compara la posicion del pivote con la posicion buscada; si coincide, se devuelve el elemento, y si no, se continua recursivamente solo sobre la mitad donde puede encontrarse el resultado.  De esta manera, Quick Select evita ordenar completamente el arreglo y mantiene el enfoque de dividir el problema en subproblemas mas pequeños hasta encontrar el elemento requerido.
 
+\newpage
+\section{Benchmarks, Generacion de resultados y graficos}
+Para la evaluacion del rendimiento de cada algoritmo, se implementaron benchmarks para ordenamiento, busqueda, busqueda por rangos, quick select y merge insertion con distintos treshholds.  Para cada uno de estos benchmarks, se midio el tiempo de ejecucion utilizando la funcion \texttt{clock()} de la biblioteca \texttt{time.h}, y se almacenaron los resultados en archivos CSV.  Posteriormente, estos archivos fueron utilizados para generar graficos comparativos mediante gnuplot, lo que permitió visualizar claramente las diferencias de rendimiento entre los algoritmos implementados bajo distintas condiciones y tamaños de entrada.

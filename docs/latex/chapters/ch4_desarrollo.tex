@@ -206,6 +206,9 @@ Para la implementacion de la busqueda binaria recursiva, se decidio utilizar una
 de los algoritmos de busqueda, este corresponde a un ID), el indicie de inicio y el indice de fin del rango de busqueda.  La funcion se llama a si misma recursivamente, 
 ajustando los indices de inicio y fin segun corresponda, hasta encontrar el elemento buscado o hasta que el rango de busqueda se vuelva invalido.
 
+
+
+
 \subsection{Búsqueda exponencial}
 
 La búsqueda exponencial es un algoritmo de búsqueda que combina una fase de expansión exponencial con búsqueda binaria. Al igual que la búsqueda binaria, 
@@ -285,6 +288,20 @@ menor que el valor buscado, se ajusta el indice inicial del rango de busqueda a 
 busqueda por interpolacion con los indices ajustados, hasta encontrar el elemento o hasta que el rango de busqueda se vuelva invalido. Es importante destacar 
 que para utilizar este algoritmo, es necesario que el arreglo se encuentre previamente ordenado, ya que la formula de interpolacion se basa en la suposicion de que 
 los datos estan distribuidos de manera uniforme.  Si el arreglo no esta ordenado, la formula de interpolacion no sera precisa y el algoritmo no funcionara correctamente. 
+
+\subsection{Búsqueda Binaria por Rangos}
+
+La búsqueda binaria por rangos es una extensión natural de la búsqueda binaria que, en lugar de buscar un elemento específico, busca todos los elementos dentro de un rango de valores definido por un límite inferior y un límite superior.  Esta operación es especialmente útil en contextos donde se necesita recuperar múltiples registros que caen dentro de ciertos parámetros, como por ejemplo encontrar todos los deportistas cuyo puntaje esté entre 100 y 500 puntos. \\
+
+El algoritmo funciona en dos fases principales. En la primera fase, se determina el índice del primer elemento cuyo valor es mayor o igual al límite inferior del rango. En la segunda fase, se determina el índice del último elemento cuyo valor es menor o igual al límite superior del rango. Una vez que se conocen ambos índices, todos los elementos entre ellos (inclusive) forman el resultado deseado. \\
+
+Para implementar cada una de estas fases se utilizan variantes especializadas de búsqueda binaria que, en lugar de buscar un valor exacto, buscan una posición límite. Específicamente, en la primera fase se ejecuta una búsqueda que mantiene el mejor candidato encontrado hasta el momento mientras se divide el espacio de búsqueda, asegurando que cuando termine la recursión, se tendrá el índice del primer elemento que cumple la condición. De manera análoga, en la segunda fase se ejecuta una búsqueda simétrica buscando desde el lado contrario. \\
+
+En términos de complejidad temporal, dado que se ejecutan dos búsquedas binarias independientes, la complejidad total es de $O(\log n)$ para buscar ambos límites, más $O(k)$ para procesar los resultados, donde $k$ es la cantidad de elementos dentro del rango. En el peor caso, si el rango abarca prácticamente todos los elementos del arreglo, $k$ puede ser igual a $n$, resultando en una complejidad total de $O(n)$. Sin embargo, en casos promedio donde el rango es relativamente pequeño, la complejidad se aproxima a $O(\log n)$. \\
+
+\subsubsection{Implementacion Búsqueda Binaria por Rangos}
+La implementacion de la busqueda binaria por rangos dentro del proyecto, consiste en utilizar dos funciones especializadas, una para encontrar el índice del primer elemento que cumple la condición de ser mayor o igual al límite inferior, y otra para encontrar el índice del último elemento que cumple la condición de ser menor o igual al límite superior.  Ambas funciones utilizan una lógica similar a la búsqueda binaria tradicional, pero con ajustes para mantener un candidato válido durante la división del espacio de búsqueda.  Luego de obtener ambos índices, se puede iterar sobre el rango definido por ellos para procesar o mostrar los elementos que cumplen con los criterios establecidos.
+
 
 \section{Algoritmos de selección}
 

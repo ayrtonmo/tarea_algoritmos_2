@@ -40,8 +40,10 @@
 #define CSV_ROUTE "./db/deportistas.csv"            /**< CSV principal de deportistas. */
 #define SEARCH_BENCHMARK_ROUTE "./db/search_benchmark.csv"  /**< Salida de benchmark de busqueda. */
 #define SORT_BENCHMARK_ROUTE "./db/sort_benchmark.csv"      /**< Salida de benchmark de ordenamiento. */
-#define SELECT_BENCHMARK_ROUTE "./db/select_benchmark.csv"
-#define RANGE_BENCHMARK_ROUTE "./db/range_benchmark.csv"
+#define SELECT_BENCHMARK_ROUTE "./db/select_benchmark.csv"   /** Salida benchmark quick select */
+#define RANGE_BENCHMARK_ROUTE "./db/range_benchmark.csv"     /** Salida benchmark busqueda por rango */
+#define MERGE_THRESHOLD_BENCHMARK_ROUTE "./db/merge_threshold_benchmark.csv"  /**< Salida benchmark merge_insertion con thresholds */
+#define MIN_MERGE_THRESHOLD_BENCHMARK_SIZE 100  /**< Cantidad minima de datos para ejecutar benchmark de merge_insertion con thresholds. */
 /** @} */
 
 
@@ -59,6 +61,11 @@ void run_search_benchmark();
  * @brief Ejecuta el benchmark de algoritmos de ordenamiento.
  */
 void run_sort_benchmark();
+
+/**
+ * @brief Ejecuta benchmark de merge_insertion variando el threshold.
+ */
+void run_merge_threshold_benchmark();
 
 /**
  * @brief Ejecuta el benchmark de Quick Select (algoritmo de seleccion).

@@ -736,6 +736,179 @@ void run_sort_benchmark()
 }
 
 /**
+ * @brief Ejecuta benchmark de merge_insertion variando threshold y guarda CSV.
+ */
+void run_merge_threshold_benchmark()
+{
+    int count = 0;
+    Deportista *baseArray = load_deportistas_array(&count);
+    const int thresholds[] = {10, 15, 20, 25, 30, 35, 40, 50};
+    int thresholdCount = (int)(sizeof(thresholds) / sizeof(thresholds[0]));
+    int intervals;
+    int stepSize;
+
+    if(baseArray == NULL || count <= 0) {
+        if(baseArray != NULL) {
+            free_deportistas_array(baseArray, count);
+        }
+
+        print_error(ERROR_BENCHMARK_DATA_LOAD_FAILED, NULL);
+        return;
+    }
+
+    if(count < MIN_MERGE_THRESHOLD_BENCHMARK_SIZE) {
+        char detail[160];
+
+        snprintf(
+            detail,
+            sizeof(detail),
+            "Se requiere un arreglo de al menos %d elementos (actual: %d)",
+            MIN_MERGE_THRESHOLD_BENCHMARK_SIZE,
+            count
+        );
+
+        print_error(ERROR_INVALID_DATA_AMOUNT, detail);
+        free_deportistas_array(baseArray, count);
+        return;
+    }
+
+    intervals = (count < INTERVAL_SIZE) ? count : INTERVAL_SIZE;
+    stepSize = count / intervals;
+
+    if(stepSize <= 0) {
+        stepSize = 1;
+    }
+
+    FILE *out = fopen(MERGE_THRESHOLD_BENCHMARK_ROUTE, "w");
+
+    if(out == NULL) {
+        print_error(ERROR_FILE_CREATE_FAILED, MERGE_THRESHOLD_BENCHMARK_ROUTE);
+        free_deportistas_array(baseArray, count);
+        return;
+    }
+
+    fprintf(out, "n,merge_classic_s");
+    for(int t = 0; t < thresholdCount; t++) {
+        fprintf(out, ",threshold_%d_s", thresholds[t]);
+    }
+    fprintf(out, "\n");
+
+    printf(BOLD_BLUE "\n=== Merge+Insertion threshold benchmark ===\n" RESET);
+    printf(
+        DIM "Archivo: %s | intervalos: %d | thresholds: %d | repeticiones: %d\n\n" RESET,
+        MERGE_THRESHOLD_BENCHMARK_ROUTE,
+        intervals,
+        thresholdCount,
+        EXPERIMENT_REPEATS
+    );
+
+    printf("n\t| tiempos promedio por threshold (s)\n");
+    printf(ASCII_HR "\n");
+
+    printf(HIDE_CURSOR);
+
+    for(int i = 0; i < intervals; i++) {
+        int n = (i == intervals - 1) ? count : (stepSize * (i + 1));
+        double thresholdTotals[16] = {0.0};
+        double classicTotal = 0.0;
+
+        /* Medir merge clásico para este n */
+        for(int r = 0; r < EXPERIMENT_REPEATS; r++) {
+            Deportista *workC;
+            Deportista *tempC;
+            clock_t startC;
+            clock_t endC;
+
+            progress_update_line("merge-threshold", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "merge-classic");
+
+            workC = clone_deportistas_array(baseArray, n);
+            tempC = malloc(sizeof(Deportista) * n);
+            if(workC == NULL || tempC == NULL) {
+                free(tempC);
+                handle_benchmark_memory_error(baseArray, count, out);
+            }
+
+            prepare_sort_case(workC, n, BENCHMARK_CASE_AVERAGE);
+
+            startC = clock();
+            merge_sort(workC, 0, n - 1, SORT_BY_ID, ASCENDING, tempC);
+            endC = clock();
+
+            classicTotal += (double)(endC - startC) / CLOCKS_PER_SEC;
+
+            free_deportistas_array(workC, n);
+            free(tempC);
+        }
+
+        classicTotal /= EXPERIMENT_REPEATS;
+
+        /* Medir merge_insertion para cada threshold */
+        for(int t = 0; t < thresholdCount; t++) {
+            int threshold = thresholds[t];
+
+            for(int r = 0; r < EXPERIMENT_REPEATS; r++) {
+                Deportista *work;
+                Deportista *temp;
+                clock_t start;
+                clock_t end;
+                volatile int sortCheck;
+                char stage[32];
+
+                snprintf(stage, sizeof(stage), "th=%d", threshold);
+                progress_update_line("merge-threshold", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, stage);
+
+                work = clone_deportistas_array(baseArray, n);
+                temp = malloc(sizeof(Deportista) * n);
+                if(work == NULL || temp == NULL) {
+                    free(temp);
+                    handle_benchmark_memory_error(baseArray, count, out);
+                }
+
+                prepare_sort_case(work, n, BENCHMARK_CASE_AVERAGE);
+
+                start = clock();
+                merge_insertion(work, 0, n - 1, SORT_BY_ID, ASCENDING, threshold, temp);
+                sortCheck = (work[0] != NULL ? 1 : 0);
+                end = clock();
+
+                thresholdTotals[t] += (double)(end - start) / CLOCKS_PER_SEC;
+
+                (void)sortCheck;
+                free_deportistas_array(work, n);
+                free(temp);
+            }
+
+            thresholdTotals[t] /= EXPERIMENT_REPEATS;
+        }
+
+        /* Escribir fila: n, merge_classic, thresholds... */
+        fprintf(out, "%d,%.10f", n, classicTotal);
+        for(int t = 0; t < thresholdCount; t++) {
+            fprintf(out, ",%.10f", thresholdTotals[t]);
+        }
+        fprintf(out, "\n");
+
+        progress_clear_line();
+        printf("%d | merge_classic=%.10f", n, classicTotal);
+        for(int t = 0; t < thresholdCount; t++) {
+            printf(" th%d=%.10f", thresholds[t], thresholdTotals[t]);
+        }
+        printf("\n");
+    }
+
+    progress_clear_line();
+    printf(SHOW_CURSOR);
+
+    fclose(out);
+    free_deportistas_array(baseArray, count);
+
+    printf(
+        BG_GREEN "\nBenchmark de thresholds de merge_insertion guardado con exito en %s\n" RESET,
+        MERGE_THRESHOLD_BENCHMARK_ROUTE
+    );
+}
+
+/**
  * @brief Ejecuta el benchmark de Quick Select y guarda sus resultados en CSV.
  */
 void run_select_benchmark()

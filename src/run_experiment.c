@@ -563,6 +563,7 @@ void print_help(const char *programName)
     printf("  -s                 Ejecuta benchmark de ordenamiento\n");
     printf("  -q                 Ejecuta benchmark de Quick Select\n");
     printf("  -x                 Ejecuta benchmark de busqueda por rango de puntaje\n");
+    printf("  -m                 Ejecuta benchmark de merge_insertion variando threshold\n");
 }
 
 /**

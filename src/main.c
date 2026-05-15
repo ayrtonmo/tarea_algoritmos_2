@@ -32,7 +32,7 @@ int main(int argc, char **argv)
         return EXIT_SUCCESS;
     }
 
-    while((opt = getopt_long(argc, argv, "hg:tr:k:bsqx", longOptions, NULL)) != -1) {
+    while((opt = getopt_long(argc, argv, "hg:tr:k:bsqxm", longOptions, NULL)) != -1) {
         switch(opt) {
             case 'h':
                 print_help(argv[0]);
@@ -105,6 +105,11 @@ int main(int argc, char **argv)
             case 'x':
             {
                 run_range_benchmark();
+                break;
+            }
+            case 'm':
+            {
+                run_merge_threshold_benchmark();
                 break;
             }
             case '?':

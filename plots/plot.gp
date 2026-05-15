@@ -20,6 +20,9 @@ searchFile = 'db/search_benchmark.csv'
 sortFile   = 'db/sort_benchmark.csv'
 selectFile = 'db/select_benchmark.csv'
 rangeFile  = 'db/range_benchmark.csv'
+mergeThresholdFile = 'db/merge_threshold_benchmark.csv'
+mergeThresholdLinearOut = 'plots/merge_threshold_benchmark_linear.pdf'
+mergeThresholdLogOut = 'plots/merge_threshold_benchmark_log.pdf'
 
 searchAverageOut   = 'plots/search_average_benchmark.pdf'
 searchWorstOut     = 'plots/search_worst_benchmark.pdf'
@@ -30,11 +33,13 @@ selectBestOut    = 'plots/select_best_benchmark.pdf'
 selectAverageOut = 'plots/select_average_benchmark.pdf'
 selectWorstOut   = 'plots/select_worst_benchmark.pdf'
 rangeOut	= 'plots/range_benchmark.pdf'
+mergeThresholdOut = 'plots/merge_threshold_benchmark.pdf'
 
 hasSearch = int(system(sprintf("test -f '%s' && echo 1 || echo 0", searchFile)))
 hasSort   = int(system(sprintf("test -f '%s' && echo 1 || echo 0", sortFile)))
 hasSelect = int(system(sprintf("test -f '%s' && echo 1 || echo 0", selectFile)))
 hasRange  = int(system(sprintf("test -f '%s' && echo 1 || echo 0", rangeFile)))
+hasMergeThreshold = int(system(sprintf("test -f '%s' && echo 1 || echo 0", mergeThresholdFile)))
 
 if (!hasSearch) {
 	print sprintf("ERROR: no existe %s", searchFile)
@@ -52,6 +57,11 @@ if (!hasSelect) {
 
 if (!hasRange) {
 	print sprintf("ERROR: no existe %s", rangeFile)
+	exit 1
+}
+
+if (!hasMergeThreshold) {
+	print sprintf("ERROR: no existe %s", mergeThresholdFile)
 	exit 1
 }
 
@@ -73,6 +83,38 @@ if (columnCount < 7) {
 }
 unset output
 unset logscale y
+
+# Merge+Insertion benchmark variando threshold
+set output mergeThresholdOut
+set title 'Merge+Insertion benchmark - variacion por threshold'
+set xlabel 'Cantidad de deportistas (n)'
+set ylabel 'Tiempo promedio (s)'
+set logscale y
+columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", mergeThresholdFile)))
+    if (columnCount < 2) {
+    	print sprintf("ERROR: CSV invalido (pocas columnas): %s", mergeThresholdFile)
+    	exit 1
+    } else {
+    	# Graficar versión lineal
+    	set output mergeThresholdLinearOut
+    	set title 'Merge+Insertion benchmark - variacion por threshold (escala lineal)'
+    	unset logscale y
+    	plot mergeThresholdFile using 1:2 with lines lw 4 lc rgb "green" title columnhead(2), \
+    	for [col=3:columnCount] mergeThresholdFile using 1:col with lines dashtype 2 lw 3 title columnhead(col)
+    	unset output
+
+    	# Graficar versión logarítmica
+    	set output mergeThresholdLogOut
+    	set title 'Merge+Insertion benchmark - variacion por threshold (escala logaritmica)'
+    	set logscale y
+    	plot mergeThresholdFile using 1:2 with lines lw 4 lc rgb "green" title columnhead(2), \
+    	for [col=3:columnCount] mergeThresholdFile using 1:col with lines dashtype 2 lw 3 title columnhead(col)
+    	unset output
+    	unset logscale y
+    }
+unset output
+unset logscale y
+set xlabel 'Cantidad de deportistas (n)'
 
 # Search benchmark: peor caso
 set output searchWorstOut

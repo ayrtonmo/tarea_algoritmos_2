@@ -352,7 +352,7 @@ uno de los algoritmos implementados.
     \label{fig:sort_best}
 \end{figure}
 
-En este primer gráfico, se visualiza el comportamiento de los algoritmos de ordenamiento implementados en su mejor caso.  Cabe destacar que en la implementación 
+En este primer gráfico, se visualiza el comportamiento de los algoritmos de ordenamiento implementados en el mejor caso.  Cabe destacar que en la implementación 
 realizada, el \textbf{mejor caso} implementado en realidad fue uno genérico para los algoritmos de ordenamiento, y se definió que ese mejor caso sería cuando el arreglo
 ya se encuentra ordenado.  Pero este es en realidad el mejor caso solo para \textit{Merge Sort} y \textit{Merge-Insertion Sort}, porque por ejemplo para \textit{Quick Sort},
 es algo más cercano al peor caso que al mejor, ya que en 2 de sus implementaciones (primer elemento como pivote y último elemento como pivote), es de hecho, el peor caso. \\
@@ -432,6 +432,24 @@ Los principales puntos a analizar acerca de este gráfico son:
     \label{fig:sort_average}
 \end{figure}
 
+En este otro  gráfico (que está en escala normal o lineal), se visualiza el comportamiento de los algoritmos de ordenamiento implementados en el caso promedio.  En la
+implementación realizada, el caso promedio fue uno genérico para todos los algoritmos, y consistió en generar un orden aleatorio para los elementos. \\
+
+Los puntos principales a analizar acerca de este gráfico son: 
+
+\begin{itemize}
+    \item Se puede observar que todos los algoritmos presentan un crecimiento relativamente similar.  Además, dicho crecimiento observado en todos, es ligeramente 
+          más pronunciado que uno lineal, pero no mucho más, lo cual concuerda con la teoría, ya que tanto \textit{Merge Sort} como \textit{Quick Sort}, y las variantes
+          implementadas de cada uno de ellos, poseen una complejidad temporal promedio de $O(n \log n)$.  
+
+    \item A pesar de lo anterior, también se observan algunas pequeñas diferencias.  Por ejemplo, la línea azul, correspondiente al algoritmo de 
+          \textit{Merge-Insertion Sort}, presentó un comportamiento ligeramente mejor a los otros algoritmos, ya que su curva se ve ligeramente por debajo de las otras,
+          lo que implica que tardó un poco menos en general.  A pesar de ser una diferencia muy pequeña, igual el hecho de que sea notoria, significa que igual el
+          hecho de combinar \textit{Merge Sort} con \textit{Insertion Sort}, ayuda a reducir un poquito el tiempo.  Nosotros pensamos que puede deberse a que 
+          \textit{Insertion Sort} evita acumular más \textit{overhead} recursivo, lo que lo hace un poco más eficiente.
+\end{itemize}
+
+
 \subsubsection{Análisis de peor caso}
 
 \begin{figure}[H]
@@ -440,6 +458,40 @@ Los principales puntos a analizar acerca de este gráfico son:
     \caption{Benchmark de algoritmos de ordenamiento en peor caso.}
     \label{fig:sort_worst}
 \end{figure}
+
+Finalmente, este gráfico ilustra qué ocurre con los algoritmos de ordenamiento cuando se enfrentan al peor caso general definido para los experimentos, 
+el cual consistió en utilizar arreglos ordenados en orden inverso.  Cabe destacar que esta definición corresponde principalmente a un peor caso para 
+\textit{Quick Sort}, pero no necesariamente para \textit{Merge Sort}. \\
+
+Lo primero que se observa del gráfico es que está representado en escala lineal. \\
+
+En base a ello, se puede analizar lo siguiente:
+
+\begin{itemize}
+
+    \item Las variantes de \textit{Quick Sort} que utilizan el primer o el último elemento como pivote fueron las que presentaron el peor rendimiento.  
+          Esto ocurre porque, bajo una entrada invertida, las particiones generadas se vuelven extremadamente desbalanceadas, provocando que el algoritmo 
+          reduzca el problema de manera muy ineficiente en cada paso recursivo.  
+
+          La forma de la curva se asemeja claramente a un crecimiento cuadrático, consistente con una complejidad temporal de 
+          $O(n^2)$, tal como lo establece la teoría para el peor caso de estas variantes.
+
+    \item La variante de \textit{Quick Sort} utilizando pivote por mediana de tres presenta un rendimiento mejor que las variantes anteriores, aunque sigue 
+          mostrando un crecimiento superior al de \textit{Merge Sort}.  
+
+          Esto puede explicarse porque seleccionar la mediana entre tres elementos permite evitar muchos casos de particiones extremadamente 
+          desbalanceadas, pero aun así no garantiza divisiones perfectamente equilibradas del arreglo en todos los casos.
+
+    \item Por otro lado, \textit{Merge Sort}, \textit{Merge-Insertion Sort} y \textit{Quick Sort} con pivote aleatorio muestran un rendimiento 
+          considerablemente mejor en este escenario.  
+
+          En el caso de \textit{Merge Sort} y \textit{Merge-Insertion Sort}, esto se debe a que su complejidad temporal depende muy poco del orden 
+          inicial de los datos, manteniéndose cercana a $O(n \log n)$ en cualquier caso.
+
+          En cuanto a \textit{Quick Sort} con pivote aleatorio, el rendimiento mejora porque la selección aleatoria del pivote reduce considerablemente 
+          la probabilidad de generar particiones extremadamente desbalanceadas de forma repetitiva.
+\end{itemize}
+
 
 \subsection{Comparación de algoritmos de búsqueda}
 
@@ -452,6 +504,35 @@ Los principales puntos a analizar acerca de este gráfico son:
     \label{fig:search_worst}
 \end{figure}
 
+En este primer gráfico comparativo sobre los algoritmos de búsqueda, que está en escala logarítmica, se puede visualizar cómo se comportan los 3 algoritmos de búsqueda 
+implementados, en el peor caso. \\
+
+Aquí, el peor caso, fue implementado de forma un poquito más cercana a la realidad.  Para búsqueda binaria y para búsqueda exponencial, el peor caso se implementó
+forzando a buscar el último ID, lo cual para la búsqueda binaria, sí entra dentro de un mal caso, ya que obliga a hacer todas las divisiones hasta llegar a la última 
+posición, en tanto que para la búsqueda exponencial, entra dentro de algo aceptable como peor caso, aunque en realidad es más cercano a un caso promedio, ya que como
+se buscará el último ID siempre, si bien el algoritmo deberá recorrer secuencialmente todas los elementos del arreglo que estén en posiciones que sean potencias de 2 que 
+estén dentro de los límites del \textit{array}, luego de eso irá a la última posición y terminará sin pasar por la sección de búsqueda binaria.  Por eso entra dentro 
+de lo aceptable para un peor caso, pero hay casos peores, como por ejemplo que no esté exactamente al final, sino más bien dentro del último tramo. \\
+
+En el caso de la búsqueda por interpolación, el peor caso se implementó de una forma personalizada respecto a los otros 2.  Lo que se hizo fue buscar el penúltimo ID en
+vez del último, y modificar artificialmente el último ID para que sea muchísimo mayor al penúltimo ID, de modo que la búsqueda por interpolación deba avanzar a pasos 
+chicos, lo cual es muy bueno para visualizar el peor caso. \\
+
+Dicho esto, lo que se puede observar, es que los algoritmos de búsqueda binaria recursiva (representado por la línea morada) y búsqueda exponencial (representado por 
+la línea de color verde oscuro), escalan increíblemente bien en este peor caso, porque su tiempo a medida que aumentan los datos crece de una forma muy lenta, que por 
+la escala logarítmica ni siquiera se nota bien el tipo de crecimiento que es, pero que podemos deducir que es un crecimiento logarítmico en la realidad, tal y cual dice
+la teoría, ya que solo un crecimiento logarítmico, podría verse como un crecimiento tan lento en una escala que ya es logarítmica. \\
+
+Por otro lado, también se puede observar que la búsqueda por interpolación, en su peor caso, tiene peor rendimiento en comparación a los otros 2 algoritmos en su otro
+peor caso.  Basta con darse cuenta que el crecimiento nosotros lo vemos suave, similar a un crecimiento logarítmico, pero a diferencia de las curvas de los otros 
+algoritmos, es un crecimiento que sí se nota.  Además hay que recordar que estamos en escala logarítmica, lo cual siempre hace que un crecimiento que aparentemente se 
+ve logarítmico, en realidad no lo sea.  \\
+
+De hecho si tomamos dos puntos aproximados sobre la curva de búsqueda por interpolación.  Por ejemplo $P_1 \approx (n=500, t=0.00001)$, $P_2 \approx (n=1000, t=0.00002)$,
+notamos la tendencia de que duplicando los datos, se duplica el tiempo de búsqueda también en el peor caso, lo cual es consistente con una complejidad temporal de $O(n)$,
+y por lo tanto con la teoría que también dice lo mismo. \\
+
+
 \subsubsection{Análisis de caso promedio}
 
 \begin{figure}[H]
@@ -460,6 +541,47 @@ Los principales puntos a analizar acerca de este gráfico son:
     \caption{Benchmark de algoritmos de búsqueda en caso promedio.}
     \label{fig:search_average}
 \end{figure}
+
+En este gráfico se observa el comportamiento de los algoritmos de búsqueda en el caso promedio.  Cabe destacar que el caso promedio implementado 
+consistió en buscar un ID aleatorio dentro del rango existente de IDs almacenados en el arreglo. \\
+
+Este enfoque resulta relativamente representativo para búsqueda binaria y búsqueda exponencial, aunque debido a la naturaleza aleatoria de la 
+selección, no siempre garantiza un comportamiento estrictamente promedio, ya que algunos IDs pueden favorecer o desfavorecer parcialmente el 
+rendimiento dependiendo de su posición dentro del arreglo. \\
+
+En el caso de la búsqueda por interpolación, ocurre una situación particular.  Debido a que los IDs fueron generados de manera incremental y 
+uniformemente distribuida, la fórmula de estimación de posición utilizada por \textit{Interpolation Search} logra aproximar de manera muy precisa 
+la ubicación del elemento buscado. \\
+
+Por esta razón, independientemente del ID sorteado para la búsqueda, el algoritmo tiende experimentalmente a comportarse de manera muy cercana a 
+un mejor caso, aproximándose incluso a un comportamiento constante en muchas ejecuciones. \\
+
+Esto implica que el caso promedio implementado no representa completamente un caso promedio realista para búsqueda por interpolación.  Sin embargo, 
+modificar esta situación hubiese requerido alterar significativamente la distribución de los IDs generados, por lo que se decidió mantener la 
+estructura original de los datos para los experimentos. \\
+
+Los principales puntos a observar/analizar del gráfico son: \\
+
+\begin{itemize}
+    \item El gráfico muestra una tendencia ligeramente ascendente para la búsqueda binaria y para la búsqueda exponencial, 
+          aunque con bastante ruido experimental, especialmente en la búsqueda exponencial.  Aun así, ignorando parcialmente 
+          dicho ruido, se puede observar una tendencia coherente con la teoría, ya que el crecimiento es muy lento e incluso 
+          casi imperceptible, lo cual, teniendo en cuenta la escala logarítmica del gráfico, sugiere un comportamiento compatible 
+          con una complejidad temporal de $O(\log n)$, tal como lo establece la teoría para ambos algoritmos.
+
+    \item La búsqueda por interpolación presenta una gran cantidad de ruido experimental e incluso una tendencia visual que 
+          aparenta ser más estable o ligeramente descendente en algunos tramos, lo cual resulta poco intuitivo.  Sin embargo, 
+          esto puede explicarse porque el caso promedio implementado no representa realmente un caso promedio para este algoritmo, 
+          sino un escenario altamente favorable.
+
+    \item Debido a la distribución incremental y uniforme de los IDs, la búsqueda por interpolación logra estimar de manera 
+          extremadamente precisa la posición del elemento buscado, provocando que experimentalmente el algoritmo se comporte 
+          de manera cercana a $O(1)$ en muchas ejecuciones.
+
+    \item Además, los tiempos medidos son extremadamente pequeños, incluso del orden de los nanosegundos ($10^{-9}$ s), por lo 
+          que diversos factores externos pueden influir significativamente en las mediciones experimentales, como variaciones 
+          del sistema operativo, carga del procesador, efectos de caché y otros procesos ejecutándose simultáneamente.
+\end{itemize}
 
 \subsection{Análisis de Quick Select}
 
@@ -471,6 +593,7 @@ Los principales puntos a analizar acerca de este gráfico son:
     \caption{Benchmark de Quick Select en mejor caso.}
     \label{fig:select_best}
 \end{figure}
+
 
 \subsubsection{Análisis de caso promedio}
 

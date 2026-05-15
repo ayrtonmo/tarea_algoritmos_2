@@ -1,7 +1,23 @@
 \chapter{Objetivos}
+
 \section{Objetivo Principal}
 
-
+Ampliar el sistema de gestión de deportistas desarrollado en el proyecto anterior, incorporando algoritmos de ordenamiento, búsqueda y selección basados en la estrategia de \textit{Divide y Vencerás}, con el propósito de analizar su comportamiento teórico y experimental sobre distintos tamaños de entrada y aplicarlos a funcionalidades concretas del sistema, tales como ordenamiento por criterios, búsqueda de registros, generación de rankings, obtención del $k$-ésimo mejor deportista y consulta de deportistas dentro de un rango de puntaje. \\
 
 \section{Objetivos Secundarios}
 
+\begin{itemize}
+    \item Implementar algoritmos de ordenamiento basados en \textit{Divide y Vencerás}, específicamente \textit{Merge Sort}, \textit{Merge-Insertion Sort} y \textit{Quick Sort}, permitiendo ordenar deportistas según distintos criterios como ID, puntaje, competencias, nombre y equipo. \\
+
+    \item Implementar distintas variantes de \textit{Quick Sort} utilizando partición de Lomuto, considerando la selección del pivote como último elemento, primer elemento, elemento aleatorio y mediana de tres, con el fin de evaluar cómo esta decisión afecta el rendimiento del algoritmo.  \\
+
+    \item Implementar algoritmos de búsqueda sobre arreglos ordenados, incluyendo búsqueda binaria recursiva, búsqueda binaria por rangos, búsqueda exponencial y búsqueda por interpolación, aplicándolos sobre los datos del sistema de deportistas.  \\
+
+    \item Implementar el algoritmo \textit{Quick Select} para obtener el $k$-ésimo mejor deportista según un criterio determinado, especialmente el puntaje, evitando ordenar completamente el arreglo cuando solo se requiere una posición específica.  \\
+
+    \item Integrar los algoritmos desarrollados al sistema existente, manteniendo la generación, carga y almacenamiento de registros en archivos CSV, así como las opciones de menú y ejecución por línea de comandos.  \\
+
+    \item Diseñar y ejecutar \textit{benchmarks} experimentales que permitan medir los tiempos de ejecución de los algoritmos implementados en distintos tamaños de entrada y en escenarios de mejor caso, caso promedio y  peor caso.  \\
+
+    \item Comparar los resultados experimentales obtenidos con el análisis teórico de complejidad temporal, identificando coincidencias, diferencias prácticas, efectos de las variantes implementadas y posibles limitaciones de la medición.  \\
+\end{itemize}

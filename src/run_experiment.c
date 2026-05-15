@@ -6,14 +6,7 @@
 #include "base.h"
 
 typedef enum {
-    MERGE_VARIANT_CLASSIC = 1,
-    MERGE_VARIANT_WITH_INSERTION = 2
-} MergeVariant;
-
-typedef enum {
     SEARCH_TYPE_BY_ID = 1,
-    SEARCH_TYPE_BY_EXACT_SCORE = 2,
-    SEARCH_TYPE_BY_SCORE_RANGE = 3
 } SearchType;
 
 typedef enum {
@@ -25,6 +18,9 @@ typedef enum {
     ORDER_MENU_DESCENDING = 1,
     ORDER_MENU_ASCENDING = 2
 } SortOrderMenuOption;
+
+static const int MERGE_INSERTION_THRESHOLD = 20;
+static const int MIN_ELEMENTS_FOR_MERGE_INSERTION = 100;
 
 /**
  * @brief Carga el CSV actual en un arreglo.
@@ -59,190 +55,25 @@ static int load_data(Deportista **deportistas, int *count)
 }
 
 /**
- * @brief Pregunta que ordenamiento usar.
- *
- * @return SortAlgorithm Opcion seleccionada.
- */
-static SortAlgorithm ask_sort_algorithm(void)
-{
-    char option[16];
-    int selected;
-
-    do {
-        system("clear");
-
-        printf(BOLD BLUE "=== Algoritmo de ordenamiento ===\n" NORMAL);
-        printf(" 1.- Quick sort\n");
-        printf(" 2.- Merge sort\n");
-        printf(BOLD "Opcion: " NORMAL);
-
-
-        if(fgets(option, sizeof(option), stdin) == NULL) {
-            return 0;
-        }
-
-        selected = atoi(option);
-    }
-    while(selected < QUICK_SORT || selected > MERGE_SORT);
-    //while (1);
-
-    return (SortAlgorithm)selected;
-}
-
-/**
- * @brief Pregunta que variante de pivote usar en Quick Sort.
- *
- * @return PivotType Variante de pivote seleccionada.
- */
-static PivotType ask_quick_sort_pivot(void)
-{
-    char option[16];
-    int selected;
-
-    do {
-        system("clear");
-
-        printf(BOLD BLUE "=== Variante de pivote Quick Sort ===\n" NORMAL);
-        printf("  1) Ultimo elemento\n");
-        printf("  2) Primer elemento\n");
-        printf("  3) Elemento aleatorio\n");
-        printf("  4) Mediana de tres\n\n");
-        printf(BOLD "Opcion: " NORMAL);
-
-        if(fgets(option, sizeof(option), stdin) == NULL) {
-            return PIVOT_LAST;
-        }
-
-        selected = atoi(option);
-    }
-    while(selected < PIVOT_LAST || selected > PIVOT_MEDIAN_OF_THREE);
-
-    return (PivotType)selected;
-}
-
-/**
- * @brief Pregunta que variante de merge sort usar.
- *
- * @return int 1 para merge clasico, 2 para merge con insertion.
- */
-static MergeVariant ask_merge_sort_variant(void)
-{
-    char option[16];
-    MergeVariant selected;
-
-    do {
-        system("clear");
-
-        printf(BOLD BLUE "=== Variante de Merge Sort ===\n" NORMAL);
-        printf(" 1.- Merge clasico\n");
-        printf(" 2.- Merge con insertion\n\n");
-        printf(BOLD "Opcion: " NORMAL);
-
-        if(fgets(option, sizeof(option), stdin) == NULL) {
-            return MERGE_VARIANT_CLASSIC;
-        }
-
-        selected = (MergeVariant)atoi(option);
-    }
-    while(selected < MERGE_VARIANT_CLASSIC || selected > MERGE_VARIANT_WITH_INSERTION);
-
-    return selected;
-}
-
-/**
- * @brief Pregunta el threshold para merge sort optimizado.
- *
- * @return int Umbral positivo para activar insertion sort en subarreglos pequenos.
- */
-static int ask_merge_insertion_threshold(void)
-{
-    char option[16];
-    int selected;
-
-    do {
-        system("clear");
-
-        printf(BOLD BLUE "=== Threshold de Merge Insertion ===\n" NORMAL);
-        printf("Ingresa el tamano maximo del subarreglo para usar insertion sort\n\n");
-        printf(BOLD "Opcion: " NORMAL);
-
-        if(fgets(option, sizeof(option), stdin) == NULL) {
-            return 16;
-        }
-
-        selected = atoi(option);
-    }
-    while(selected < 1);
-
-    return selected;
-}
-
-/**
- * @brief Pregunta que algoritmo de busqueda usar para buscar por ID.
- *
- * @return SearchAlgorithm Opcion seleccionada.
- */
-static SearchAlgorithm ask_search_algorithm_by_id(void)
-{
-    char option[16];
-    int selected;
-
-    do {
-        system("clear");
-
-        printf(BOLD BLUE "=== Algoritmo de busqueda por ID ===\n" NORMAL);
-        printf(" 1.- Busqueda binaria recursiva\n");
-        printf(" 2.- Busqueda exponencial\n");
-        printf(" 3.- Busqueda por interpolacion\n\n");
-        printf(BOLD "Opcion: " NORMAL);
-
-        if(fgets(option, sizeof(option), stdin) == NULL) {
-            return BINARY_SEARCH;
-        }
-
-        selected = atoi(option);
-    }
-    while(selected < 1 || selected > 3);
-
-    switch(selected) {
-        case 2:
-            return EXPONENTIAL_SEARCH;
-        case 3:
-            return INTERPOLATION_SEARCH;
-        case 1:
-        default:
-            return BINARY_SEARCH;
-    }
-}
-
-/**
  * @brief Pregunta el tipo de busqueda interactiva a realizar.
  *
- * @return int 1=ID, 2=Puntaje exacto, 3=Rango de puntaje
+ * @return int 1=ID
  */
 static SearchType ask_search_type(void)
 {
     char option[16];
-    SearchType selected;
 
-    do {
-        system("clear");
+    system("clear");
 
-        printf(BOLD BLUE "=== Tipo de busqueda ===\n" NORMAL);
-        printf(" 1.- Buscar por ID\n");
-        printf(" 2.- Buscar por puntaje exacto\n");
-        printf(" 3.- Buscar por rango de puntaje\n\n");
-        printf(BOLD "Opcion: " NORMAL);
+    printf(BOLD BLUE "=== Tipo de busqueda ===\n" NORMAL);
+    printf(" 1.- Buscar por ID\n\n");
+    printf(BOLD "Opcion: " NORMAL);
 
-        if(fgets(option, sizeof(option), stdin) == NULL) {
-            return SEARCH_TYPE_BY_ID;
-        }
-
-        selected = (SearchType)atoi(option);
+    if(fgets(option, sizeof(option), stdin) == NULL) {
+        return SEARCH_TYPE_BY_ID;
     }
-    while(selected < SEARCH_TYPE_BY_ID || selected > SEARCH_TYPE_BY_SCORE_RANGE);
 
-    return selected;
+    return SEARCH_TYPE_BY_ID;
 }
 
 static void run_search_interactive(void)
@@ -269,26 +100,7 @@ static void run_search_interactive(void)
 
         quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
 
-        SearchAlgorithm algorithmOption = ask_search_algorithm_by_id();
-        int index = -1;
-
-        switch(algorithmOption) {
-            case EXPONENTIAL_SEARCH:
-                quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
-                index = exponential_search_by_id(deportistas, count, targetId);
-                break;
-
-            case INTERPOLATION_SEARCH:
-                quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
-                index = interpolation_search_by_id(deportistas, count, targetId);
-                break;
-
-            case BINARY_SEARCH:
-            default:
-                quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
-                index = binary_search_by_id_recursive(deportistas, 0, count - 1, targetId);
-                break;
-        }
+        int index = interpolation_search_by_id(deportistas, count, targetId);
 
         if(index == -1) {
             char detail[32];
@@ -296,69 +108,6 @@ static void run_search_interactive(void)
             print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
         } else {
             print_deportista(deportistas[index]);
-        }
-
-        free_deportistas_array(deportistas, count);
-        return;
-    }
-
-    if(type == SEARCH_TYPE_BY_EXACT_SCORE) {
-        char input[64];
-        float targetScore;
-
-        printf(BOLD "Ingrese puntaje (float): " NORMAL);
-        if(fgets(input, sizeof(input), stdin) == NULL) {
-            free_deportistas_array(deportistas, count);
-            return;
-        }
-
-        targetScore = strtof(input, NULL);
-
-        insertion_sort_deportistas(deportistas, count, SORT_BY_PUNTAJE, ASCENDING);
-
-        int index = binary_search_by_score(deportistas, 0, count - 1, targetScore);
-
-        if(index == -1) {
-            char detail[64];
-            snprintf(detail, sizeof(detail), "%.2f", targetScore);
-            print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
-        } else {
-            print_deportista(deportistas[index]);
-        }
-
-        free_deportistas_array(deportistas, count);
-        return;
-    }
-
-    /* SEARCH_TYPE_BY_SCORE_RANGE: rango */
-    {
-        char input[64];
-        float lowScore, highScore;
-        int outLeft = -1, outRight = -1;
-
-        printf(BOLD "Ingrese puntaje minimo: " NORMAL);
-        if(fgets(input, sizeof(input), stdin) == NULL) {
-            free_deportistas_array(deportistas, count);
-            return;
-        }
-        lowScore = strtof(input, NULL);
-
-        printf(BOLD "Ingrese puntaje maximo: " NORMAL);
-        if(fgets(input, sizeof(input), stdin) == NULL) {
-            free_deportistas_array(deportistas, count);
-            return;
-        }
-        highScore = strtof(input, NULL);
-
-        int found = binary_search_by_range(deportistas, count, lowScore, highScore, &outLeft, &outRight);
-
-        if(found <= 0) {
-            printf("No se encontraron deportistas en el rango %.2f - %.2f\n", lowScore, highScore);
-        } else {
-            printf(BOLD BLUE "\n=== Se encontraron %d deportistas en el rango ===\n" NORMAL, found);
-            for(int i = outLeft; i <= outRight; i++) {
-                print_deportista(deportistas[i]);
-            }
         }
 
         free_deportistas_array(deportistas, count);
@@ -376,49 +125,40 @@ static void run_search_interactive(void)
 static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrder order)
 {
     Deportista *deportistas = NULL;
-    SortAlgorithm algorithmOption = ask_sort_algorithm();
     int count = 0;
 
     if(!load_data(&deportistas, &count)) {
         return;
     }
 
-    // Poner un switch con cada algoritmo y dentro de cada caso cargar datos, ordenar, imprimir resultado y liberar memoria
-    switch(algorithmOption) {
-        case QUICK_SORT:
-        {
-            PivotType pivotType = ask_quick_sort_pivot();
-
-            quick_sort_deportistas(deportistas, count, criteria, order, pivotType);
-            break;
-        }
-
-        case MERGE_SORT:
-        {
-            Deportista *temp = malloc(sizeof(Deportista) * count);
-            MergeVariant mergeVariant = ask_merge_sort_variant();
-
-            if(temp == NULL) {
-                print_error(ERROR_MEMORY_ALLOCATION_FAILED, NULL);
-                free_deportistas_array(deportistas, count);
-                return;
-            }
-
-            if(mergeVariant == MERGE_VARIANT_CLASSIC) {
-                merge_sort(deportistas, 0, count - 1, criteria, order, temp);
-            } else {
-                int threshold = ask_merge_insertion_threshold();
-                merge_insertion(deportistas, 0, count - 1, criteria, order, threshold, temp);
-            }
-
-            free(temp);
-            break;
-        }
-
-        default:
-            print_error(ERROR_NOT_IMPLEMENTED, NULL);
-            break;
+    if(count <= MIN_ELEMENTS_FOR_MERGE_INSERTION) {
+        print_error(
+            ERROR_INVALID_DATA_AMOUNT,
+            "Merge-Insertion requiere mas de 100 elementos"
+        );
+        free_deportistas_array(deportistas, count);
+        return;
     }
+
+    Deportista *temp = malloc(sizeof(Deportista) * count);
+
+    if(temp == NULL) {
+        print_error(ERROR_MEMORY_ALLOCATION_FAILED, NULL);
+        free_deportistas_array(deportistas, count);
+        return;
+    }
+
+    merge_insertion(
+        deportistas,
+        0,
+        count - 1,
+        criteria,
+        order,
+        MERGE_INSERTION_THRESHOLD,
+        temp
+    );
+
+    free(temp);
 
     if(rankingAmount > count) {
         rankingAmount = count;
@@ -437,43 +177,16 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
 void search_by_id(int targetId)
 {
     Deportista *deportistas = NULL;
-    SearchAlgorithm algorithmOption;
     int count = 0;
     int index = -1;
     char detail[32];
 
-    algorithmOption = ask_search_algorithm_by_id();
     if(!load_data(&deportistas, &count)) {
         return;
     }
 
-    switch(algorithmOption) {
-        case INTERPOLATION_SEARCH:
-            quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
-            index = interpolation_search_by_id(deportistas, count, targetId);
-            break;
-
-        case EXPONENTIAL_SEARCH:
-            quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
-            index = exponential_search_by_id(deportistas, count, targetId);
-            break;
-
-        case BINARY_SEARCH:
-            quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
-            index = binary_search_by_id_recursive(
-                deportistas,
-                0,
-                count - 1,
-                targetId
-            );
-            break;
-
-        case SEQUENTIAL_SEARCH:
-        default:
-            print_error(ERROR_NOT_IMPLEMENTED, NULL);
-            free_deportistas_array(deportistas, count);
-            return;
-    }
+    quick_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING, PIVOT_LAST);
+    index = interpolation_search_by_id(deportistas, count, targetId);
 
     if(index == -1) {
         snprintf(detail, sizeof(detail), "%d", targetId);

@@ -352,6 +352,7 @@ uno de los algoritmos implementados.
     \label{fig:sort_best}
 \end{figure}
 
+
 En este primer gráfico, se visualiza el comportamiento de los algoritmos de ordenamiento implementados en el mejor caso.  Cabe destacar que en la implementación 
 realizada, el \textbf{mejor caso} implementado en realidad fue uno genérico para los algoritmos de ordenamiento, y se definió que ese mejor caso sería cuando el arreglo
 ya se encuentra ordenado.  Pero este es en realidad el mejor caso solo para \textit{Merge Sort} y \textit{Merge-Insertion Sort}, porque por ejemplo para \textit{Quick Sort},
@@ -467,6 +468,10 @@ Lo primero que se observa del gráfico es que está representado en escala linea
 
 En base a ello, se puede analizar lo siguiente:
 
+
+
+
+
 \begin{itemize}
 
     \item Las variantes de \textit{Quick Sort} que utilizan el primer o el último elemento como pivote fueron las que presentaron el peor rendimiento.  
@@ -493,7 +498,33 @@ En base a ello, se puede analizar lo siguiente:
 \end{itemize}
 
 
-\subsection{Comparación de algoritmos de búsqueda}
+\subsubsection{Analisis Merge-Insertion Sort}
+En esta seccion, se analizara el rendimiento de Merge-Insertion Sort en el caso promedio con distintos treshholds, para determinar cual es el treshhold optimo para aplicar Insertion Sort en lugar de continuar con la division recursiva.  Para esto, se compararan los tiempos obtenidos en el benchmark de Merge-Insertion Sort con distintos treshholds, y con Merge clasico y se analizara cual de ellos ofrece el mejor rendimiento en funcion del tamaño de entrada. \\
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/merge_threshold_benchmark_linear.pdf}
+        \\
+        \small (a) Escala lineal
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/merge_threshold_benchmark_log.pdf}
+        \\
+        \small (b) Escala logarítmica
+    \end{minipage}
+    \caption{Evaluación de Merge-Insertion: comparación de thresholds en escala lineal y logarítmica.}
+    \label{fig:merge_threshold_both}
+\end{figure}
+
+Como se puede observar en ambos gráficos, el rendimiento de Merge-Insertion Sort varía dependiendo del treshhold utilizado para decidir cuándo aplicar Insertion Sort.  En general, se observa que los treshholds más bajos (por ejemplo, 10 o 20) tienden a ofrecer un mejor rendimiento en comparación con treshholds más altos (como 50 o 100).  Esto se debe a que Insertion Sort es particularmente eficiente para ordenar pequeños subarreglos, y al aplicar esta estrategia con un treshhold bajo, se reduce el overhead recursivo asociado a dividir el arreglo en partes cada vez más pequeñas. \\
+
+Esta diferencia se hace mas notoria al analizar el grafico en escala lineal, donde se puede apreciar claramente la superioridad en rendimiento de los treshholds mas bajos en comparacion a los mas altos y a la implementacion clasica de Merge Sort. Sin embargo, al analizar ambos gráficos en conjunto, se puede concluir que un treshhold de alrededor de 10 o 20 es óptimo para aplicar Insertion Sort dentro de Merge-Insertion Sort, ya que ofrece un rendimiento que puede no parecer significativo, pero para cantidades grandes de datos puede hacer la diferencia. Otra conclusion importantes es que el valor de treshhold exacto puede depender del tamaño de entrada y de la distribución de los datos, por lo que es recomendable realizar pruebas adicionales para determinar el treshhold más adecuado en cada caso específico.
+
+
 
 \subsubsection{Análisis de peor caso}
 
@@ -583,7 +614,19 @@ Los principales puntos a observar/analizar del gráfico son: \\
           del sistema operativo, carga del procesador, efectos de caché y otros procesos ejecutándose simultáneamente.
 \end{itemize}
 
+\subsubsection{Análisis Busqueda Binaria por Rangos}
+Para el analisis de busqueda binaria por rangos, se comparo el rendimiento de la busqueda para rangos promedios con el rendimiento de los peores. Como se puede observar en el grafico, el rendimiento de ambos casos es bastante similar, aunque el caso promedio presenta un rendimiento ligeramente mejor. Esto se debe a que en el caso promedio, al seleccionar un elemento aleatorio dentro del rango de puntajes, se obtiene una muestra representativa del comportamiento del algoritmo en condiciones promedio, lo que puede resultar en tiempos de búsqueda más rápidos en algunos casos. Por otro lado, el peor caso puede presentar tiempos de búsqueda más largos debido a la naturaleza específica de los datos o a la posición del elemento buscado dentro del rango. Sin embargo, en general, ambos casos muestran un rendimiento bastante cercano, lo que sugiere que la búsqueda binaria por rangos es eficiente tanto en situaciones promedio como en situaciones adversas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Fig/range_benchmark.pdf}
+    \caption{Benchmark de busqueda binaria por rangos.}
+    \label{fig:bin_rang}
+\end{figure}
+
+
 \subsection{Análisis de Quick Select}
+En los gráficos de \textit{Quick Select} se observa que el rendimiento del algoritmo depende de forma importante tanto del caso experimental construido como de la estrategia utilizada para seleccionar el pivote.En el caso promedio, las cuatro variantes presentan curvas muy cercanas entre sí y con un crecimiento gradual, lo que resulta coherente con el comportamiento esperado de \textit{Quick Select}, ya que normalmente no necesita ordenar todo el arreglo, sino continuar solo por la partición donde se encuentra el elemento buscado. Finalmente, en el peor caso, se aprecia un aumento más notorio del tiempo de ejecución, especialmente en las variantes con pivote aleatorio y pivote en el primer elemento; sin embargo, los tiempos siguen siendo bajos en comparación con un ordenamiento completo. En conjunto, los resultados muestran que \textit{Quick Select} es una alternativa adecuada para obtener el $k$-ésimo deportista según un criterio determinado, pero también evidencian que su rendimiento práctico puede variar según la elección del pivote y la forma en que quedan distribuidas las particiones durante la ejecución.
 
 \subsubsection{Análisis de mejor caso}
 
@@ -594,6 +637,7 @@ Los principales puntos a observar/analizar del gráfico son: \\
     \label{fig:select_best}
 \end{figure}
 
+En el mejor caso, las variantes con pivote en el primer elemento y pivote aleatorio presentan tiempos considerablemente menores, mientras que las variantes con último elemento y mediana de tres muestran un crecimiento mucho más alto; esto indica que, para esa disposición específica de los datos y de la posición buscada, algunas elecciones de pivote permiten acercarse rápidamente al elemento objetivo, mientras que otras generan particiones menos favorables.
 
 \subsubsection{Análisis de caso promedio}
 
@@ -604,6 +648,8 @@ Los principales puntos a observar/analizar del gráfico son: \\
     \label{fig:select_average}
 \end{figure}
 
+En el caso promedio, las cuatro variantes presentan curvas muy cercanas entre sí y con un crecimiento gradual, lo que resulta coherente con el comportamiento esperado de \textit{Quick Select}, ya que normalmente no necesita ordenar todo el arreglo, sino continuar solo por la partición donde se encuentra el elemento buscado.
+
 \subsubsection{Análisis de peor caso}
 
 \begin{figure}[H]
@@ -613,3 +659,105 @@ Los principales puntos a observar/analizar del gráfico son: \\
     \label{fig:select_worst}
 \end{figure}
 
+Finalmente, en el peor caso, se aprecia un aumento más notorio del tiempo de ejecución, especialmente en las variantes con pivote aleatorio y pivote en el primer elemento; sin embargo, los tiempos siguen siendo bajos en comparación con un ordenamiento completo. \\
+
+En conjunto, los resultados muestran que \textit{Quick Select} es una alternativa adecuada para obtener el $k$-ésimo deportista según un criterio determinado, pero también evidencian que su rendimiento práctico puede variar según la elección del pivote y la forma en que quedan distribuidas las particiones durante la ejecución.
+
+\subsection{Comparacion con algoritmos iterativos}
+
+
+En el proyecto anterior, se realizaron benchmark similares con respecto a los algoritmos de busqueda y ordenamiento, pero utilizando implementaciones iterativas de cada uno de los algoritmos.  Por lo tanto, en esta seccion se comparara el rendimiento de los algoritmos recursivos implementados en este proyecto, con el rendimiento de los algoritmos iterativos implementados en el proyecto anterior.  Para esto, se compararan los tiempos obtenidos en los benchmarks de busqueda y ordenamiento para ambos tipos de algoritmos, y se analizara cual de ellos ofrece un mejor rendimiento en funcion del mismo tamanho de entrada. \\
+
+
+
+\subsubsection{Comparacion de algoritmos de Busquedas}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/secuential/search_worst_benchmark.pdf}
+        \\
+        \small (a) Iterativos
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/search_worst_benchmark.pdf}
+        \\
+        \small (b) Recursivos
+    \end{minipage}
+    \caption{Benchmark de algoritmos de búsqueda: comparativa iterativos vs recursivos.}
+    \label{fig:search_iter_vs_rec}
+\end{figure}
+
+Al analizar los graficos, las conclusiones son claras. La mayoria de algoritmos recursivos (a excepcion de la busqueda por interpolacion), presentan un rendimiento mejor que sus equivalentes iterativos, lo cual se puede observar claramente al comparar los tiempos de ambos graficos.  Esto se debe a que las implementaciones recursivas presentan tiempos teoricos de ejecucion menores que las implementaciones iterativas, lo cual se refleja en los tiempos medidos en los benchmarks.  Por ejemplo, la busqueda binaria recursiva tiene una complejidad temporal de $O(\log n)$, mientras que la busqeuda secuencias tiene una complejidad temporal de $O(n)$, lo cual explica la diferencia de rendimiento observada en el gráfico.  Sin embargo, es importante destacar que la diferencia entre Binaria iterativo y binaria recursivo no es tan grande, lo cual se debe a que ambos algoritmos tienen la misma complejidad temporal de $O(\log n)$, aunque la implementación recursiva puede tener un overhead adicional debido a las llamadas recursivas, lo cual puede afectar ligeramente el rendimiento en algunos casos.  En el caso de la busqueda por interpolacion, su rendimiento es peor que el de los otros algoritmos, lo cual se debe a que su complejidad temporal en el peor caso es de $O(n)$, lo cual es significativamente peor que la complejidad temporal de los otros algoritmos de búsqueda implementados.  Por lo tanto, aunque la búsqueda por interpolación puede ser eficiente en ciertos casos específicos, su rendimiento general es inferior al de los otros algoritmos de búsqueda implementados.
+
+
+\subsubsection{Comparacion de algoritmos de Ordenamiento}
+
+En esta seccion se compararan las implementaciones iterativas de los algoritmos de ordenamiento realizados en el proyecto anterior, con las implementaciones recursivas realizadas en este proyecto.  Para esto, se compararan los tiempos obtenidos en los benchmarks de ordenamiento para ambos tipos de algoritmos, y se analizara cual de ellos ofrece un mejor rendimiento en funcion del mismo tamanho de entrada. \\
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/secuential/sort_best_benchmark.pdf}
+        \\
+        \small (a) Mejor caso
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/secuential/sort_average_benchmark.pdf}
+        \\
+        \small (b) Caso promedio
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/secuential/sort_worst_benchmark.pdf}
+        \\
+        \small (c) Peor caso
+    \end{minipage}
+    \caption{Benchmarks de ordenamiento secuencial: mejor, promedio y peor caso.}
+    \label{fig:sordasd_all}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/sort_worst_benchmark.pdf}
+        \\
+        \small (a) Mejor caso
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/sort_average_benchmark.pdf}
+        \\
+        \small (b) Caso promedio
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Fig/sort_worst_benchmark.pdf}
+        \\
+        \small (c) Peor caso
+    \end{minipage}
+    \caption{Benchmarks de ordenamiento recusivo: mejor, promedio y peor caso.}
+    \label{fig:sortrec}
+\end{figure}
+
+Al comparar los algoritmos de ordenamiento iterativos con sus equivalentes recursivos, se observa que ambos grupos conservan el mismo comportamiento asintótico esperado, pero difieren en el costo constante asociado a su implementación.  En el caso de los algoritmos recursivos, la estructura de llamadas facilita la división natural del problema y suele producir un beneficio conceptual el cual introduce un \textit{overhead} adicional por las llamadas recursivas y por el manejo de la pila de ejecución.
+
+Desde el punto de vista experimental, los ordenamientos iterativos tienden a ser ligeramente más estables cuando se trabaja con entradas grandes y con muchas repeticiones del benchmark, porque evitan parte del costo de la recursión y reducen la presión sobre la pila.  Esto se nota con mayor claridad en algoritmos como \textit{Quick Sort}, donde la elección del pivote y el comportamiento de las particiones influyen en el rendimiento final.  En cambio, en \textit{Merge Sort} y \textit{Merge-Insertion Sort}, la versión recursiva no se queda atras en cuanto a rendimiento, ya que la división uniforme del arreglo favorece su funcionamiento (ausencia de overhead) y la diferencia con la versión iterativa no siempre resulta significativa.
+
+En términos generales, puede afirmarse que las versiones recursivas son más naturales para expresar algoritmos de tipo \textbf{Divide y Vencerás}, mientras que las versiones iterativas pueden ofrecer una ligera ventaja práctica cuando se busca minimizar el costo de ejecución y el uso de pila.  Por ello, la elección entre una u otra implementación depende del objetivo del trabajo: si se prioriza claridad y relación directa con la teoría, la versión recursiva es más conveniente; si se prioriza control fino del rendimiento, la versión iterativa puede ser una alternativa atractiva.
+
+Por ultimo, no esta demas mencionar que los algoritmos como burbuja, insertion y selection, aunque son algoritmos de ordenamiento clásicos y fáciles de entender, presentan un rendimiento muy inferior al de los algoritmos basados en \textbf{Divide y Vencerás}, como \textit{Merge Sort} y \textit{Quick Sort}, especialmente a medida que el tamaño de la entrada aumenta.  Por lo tanto, aunque pueden ser útiles para ordenar pequeñas cantidades de datos, queda evidenciado que no son recomendables para aplicaciones prácticas que requieran eficiencia en el ordenamiento de grandes conjuntos de datos.
+
+\subsection{Análisis General}
+
+En términos generales, los resultados experimentales permiten observar que los algoritmos recursivos implementados en este proyecto presentan un rendimiento claramente superior frente a los algoritmos iterativos trabajados en la etapa anterior, especialmente en los problemas de ordenamiento. Mientras los algoritmos iterativos clásicos, como Bubble Sort, Selection Sort, Insertion Sort y Cocktail Shaker Sort, tienden a presentar comportamientos cuadráticos en gran parte de los escenarios, los algoritmos basados en \textit{Divide y Vencerás}, como \textit{Merge Sort}, \textit{Merge-Insertion Sort} y varias variantes de \textit{Quick Sort}, logran mantener un crecimiento mucho más controlado, cercano a $O(n \log n)$ en condiciones favorables o promedio. En búsqueda ocurre una situación similar: los métodos que reducen progresivamente el espacio de búsqueda, como búsqueda binaria recursiva, búsqueda exponencial y búsqueda por interpolación en condiciones adecuadas, resultan más eficientes que una revisión secuencial directa de los datos. No obstante, también se observa que los resultados experimentales no siempre coinciden de manera exacta con la teoría, lo cual es esperable, ya que las mediciones dependen de factores como el hardware utilizado, la carga del sistema operativo, la caché del procesador, el compilador, el tamaño de entrada, la forma en que se construyen los casos de prueba y el costo constante de cada implementación. Por ello, la complejidad asintótica permite explicar la tendencia general, pero no determina por sí sola todos los tiempos reales medidos. Considerando el conjunto de datos utilizado en este proyecto, su forma de generación, la distribución incremental de los ID y los resultados obtenidos en los benchmarks, se concluye que la alternativa más conveniente para el ordenamiento es \textit{Merge-Insertion Sort} utilizando un \textit{threshold} bajo, mientras que para la búsqueda por ID la opción más favorable es la búsqueda por interpolación, debido a que la distribución uniforme de los identificadores permite estimar con alta precisión la posición del elemento buscado.

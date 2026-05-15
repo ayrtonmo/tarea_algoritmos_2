@@ -21,3 +21,7 @@ db/
 *.fls
 *.blg
 docs/doxygen/latex/
+
+plots/*.pdf
+
+bd/*.csv

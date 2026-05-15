@@ -99,6 +99,12 @@ $T(n) \in O(n \log n)$ \\
 Por lo tanto, \textit{Merge Sort} posee complejidad temporal $O(n \log n)$ tanto en el mejor caso, como en el caso promedio y peor caso, ya que el arreglo 
 siempre se divide de manera uniforme, independientemente del orden inicial de los elementos. \\
 
+Aun así, es posible distinguir ciertas diferencias en la cantidad de comparaciones realizadas durante la etapa de fusión (\textit{Merge}). El mejor caso ocurre 
+cuando los elementos de uno de los subarreglos se consumen rápidamente, como sucede cuando el arreglo ya se encuentra previamente ordenado, reduciendo así la
+cantidad de comparaciones necesarias.  En cambio, el peor caso ocurre cuando los elementos de ambos subarreglos se encuentran altamente intercalados, obligando 
+al algoritmo a realizar prácticamente el máximo número de comparaciones posibles durante la fusión.  El caso promedio corresponde a una situación intermedia 
+entre ambos escenarios. \\
+
 \subsubsection{Implementacion Merge Sort}
 En este proyecto, la implementación de \textit{Merge Sort} permite la búsqueda de deportistas por distintos parámetros, como el ID, el puntaje, la cantidad 
 de competencias, el nombre o el equipo.  Para esto, se implementó una función de comparación que recibe un parámetro adicional que indica el criterio de 
@@ -110,8 +116,8 @@ lo que se logra modificando la logica de comparacion para invertir el orden cuan
 
 \subsection{Merge-Insertion Sort}
 
-\textit{Merge-Insertion Sort} corresponde a una variante optimizada de \textit{Merge Sort}, cuyo objetivo es reducir el overhead recursivo que se produce al 
-trabajar con subarreglos muy pequeños. \\
+\textit{Merge-Insertion Sort} corresponde a una variante optimizada de \textit{Merge Sort}, cuyo objetivo es reducir el \textit{overhead} recursivo que se 
+produce al trabajar con subarreglos muy pequeños. \\
 
 La idea principal consiste en que, cuando los subarreglos alcanzan un tamaño suficientemente pequeño, en lugar de continuar dividiéndolos recursivamente, 
 se utiliza \textit{Insertion Sort} para ordenarlos directamente. \\
@@ -341,12 +347,146 @@ uno de los algoritmos implementados.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{../Fig/sort_best_benchmark.pdf}
-    \caption{Benchmark de algoritmos de ordenamiento en caso promedio.}
+    \includegraphics[width=0.7\textwidth]{../Fig/sort_best_benchmark.pdf}
+    \caption{Benchmark de algoritmos de ordenamiento en mejor caso.}
     \label{fig:sort_best}
+\end{figure}
+
+En este primer gráfico, se visualiza el comportamiento de los algoritmos de ordenamiento implementados en su mejor caso.  Cabe destacar que en la implementación 
+realizada, el \textbf{mejor caso} implementado en realidad fue uno genérico para los algoritmos de ordenamiento, y se definió que ese mejor caso sería cuando el arreglo
+ya se encuentra ordenado.  Pero este es en realidad el mejor caso solo para \textit{Merge Sort} y \textit{Merge-Insertion Sort}, porque por ejemplo para \textit{Quick Sort},
+es algo más cercano al peor caso que al mejor, ya que en 2 de sus implementaciones (primer elemento como pivote y último elemento como pivote), es de hecho, el peor caso. \\
+
+Además, como se puede apreciar, el gráfico está hecho en escala logarítmica en base 10, lo que significa que hay que ser más cauteloso en este análisis. \\
+
+Los principales puntos a analizar acerca de este gráfico son: 
+
+\begin{itemize}
+    \item Las 3 curvas inferiores del gráfico (azul, amarilla y celeste), correspondientes \textit{Merge-Insertion Sort}, \textit{Merge Sort} y \textit{Quick Sort} 
+          mediante pivote aleatorio respectivamente, se encuentran bastante próximas entre sí y presentan una forma visual relativamente suave.  
+          A primera vista, debido a que el eje vertical se encuentra representado en escala logarítmica en base 10, las curvas parecen similares a funciones logarítmicas.  
+          Sin embargo, es importante tener presente que el tiempo real no está creciendo logarítmicamente, sino que la escala logarítmica comprime visualmente el 
+          crecimiento real de las funciones temporales. \\
+
+          Para aproximar experimentalmente el tipo de crecimiento, inspeccionamos dos puntos aproximados del gráfico: \\
+          
+          $P_1 \approx (n=1500,\ t=0.0001)$ y $P_2 \approx (n=3000,\ t=0.0002)$ \\
+
+          Se puede observar que al duplicar la cantidad de datos, el tiempo también aproximadamente se duplica.
+
+          Esto sugiere experimentalmente un crecimiento muy cercano al lineal, lo cual resulta coherente con la teoría, ya que estos algoritmos, en escenarios 
+          favorables o promedio, poseen complejidad temporal de $O(n \log n)$, lo cual también es considerado como un crecimiento \textit{quasilineal}. \\
+
+          En el caso particular de \textit{Merge Sort} y \textit{Merge-Insertion Sort}, este comportamiento resulta esperable, ya que ambos algoritmos dividen 
+          el arreglo de manera relativamente uniforme, evitando particiones extremadamente desbalanceadas.  Además, en \textit{Merge-Insertion Sort}, el uso de 
+          \textit{Insertion Sort} sobre subarreglos pequeños reduce considerablemente el \textit{overhead} recursivo, lo cual explica que experimentalmente su 
+          curva tienda a ubicarse ligeramente por debajo de la correspondiente a \textit{Merge Sort}. \\
+
+          Por otro lado, el buen rendimiento experimental de \textit{Quick Sort} con pivote aleatorio, se debe principalmente a que la selección aleatoria del 
+          pivote, reduce significativamente la probabilidad de generar particiones extremadamente desequilibradas de forma repetitiva, aproximando así el 
+          comportamiento promedio esperado de \textit{Quick Sort}, el cual también corresponde a complejidad temporal $O(n \log n)$ bajo condiciones normales.
+
+    \item Las otras 3 curvas del gráfico (verde, naranja y morada), correspondientes a las variantes de \textit{Quick Sort} utilizando pivote al inicio, pivote 
+          al final y mediana de tres, respectivamente, se encuentran considerablemente más arriba que las anteriores y presentan un crecimiento claramente mayor.  
+          Visualmente, debido nuevamente a la escala logarítmica utilizada, las curvas siguen viéndose suaves; sin embargo, esto no implica que el crecimiento real 
+          sea logarítmico.  De hecho, la escala logarítmica comprime fuertemente las diferencias de crecimiento, por lo que algoritmos con complejidad cuadrática 
+          pueden aparentar visualmente un crecimiento mucho más moderado. \\
+
+          Comparando experimentalmente las curvas inferiores con estas curvas superiores, se observa que el tiempo aumenta considerablemente más rápido a medida 
+          que crece el tamaño del arreglo.  Esto resulta especialmente coherente con la teoría en las variantes que utilizan pivote al inicio y pivote al final. \\
+
+          En estos casos, el arreglo previamente ordenado ascendentemente produce sistemáticamente particiones extremadamente desequilibradas bajo el esquema de 
+          partición de Lomuto.  Por ejemplo, si el pivote corresponde siempre al último elemento y el arreglo ya se encuentra ordenado, entonces dicho pivote será 
+          constantemente el mayor elemento del subarreglo, provocando divisiones del tipo $(n-1,\ 0)$, en lugar de divisiones balanceadas o relativamente balanceadas. \\
+
+          Como consecuencia, la profundidad recursiva aumenta considerablemente y la recurrencia temporal se aproxima a $T(n)=T(n-1)+O(n)$, cuya solución corresponde 
+          a una complejidad de $O(n^2)$, lo cual coincide completamente con el peor caso teórico de \textit{Quick Sort} (el mejor caso genérico implementado). \\
+
+          En el caso de la variante mediante mediana de tres, teóricamente se esperaría un mejor rendimiento respecto a las variantes con pivote fijo, debido a que 
+          seleccionar la mediana entre el primer elemento, el central y el último reduce la probabilidad de generar pivotes extremadamente desfavorables.  Sin embargo, 
+          experimentalmente se observa que su curva permanece bastante próxima a las variantes con pivote al inicio y al final. \\
+
+          Lo anterior sugiere que, si bien la estrategia de mediana de tres logra evitar algunos pivotes particularmente malos, el arreglo previamente ordenado 
+          sigue produciendo particiones suficientemente desbalanceadas como para deteriorar considerablemente el rendimiento práctico del algoritmo.  Además, el 
+          \textit{overhead} adicional necesario para calcular la mediana en cada llamada recursiva también puede influir negativamente en el tiempo total de ejecución. \\
+
+          Por lo tanto, aunque la estrategia de mediana de tres suele mejorar el comportamiento promedio de \textit{Quick Sort}, en este escenario experimental 
+          específico no logra separarse significativamente de las otras variantes de \textit{Quick Sort} con pivote fijo, manteniendo un comportamiento empírico 
+          considerablemente menos eficiente que los algoritmos basados en \textit{Merge Sort}.
+
+    \item Normalmente, en el mejor caso real para cada algoritmo, esperaríamos que todos presenten complejidad temporal $O(n \log n)$, y que \textit{Quick Sort}, 
+          especialmente en sus variantes mediante pivote aleatorio y mediana de tres, evidencie tiempos incluso ligeramente menores que \textit{Merge Sort} y 
+          \textit{Merge-Insertion Sort}.  Esto se debe principalmente a que \textit{Quick Sort} trabaja \textit{in-place}, utilizando considerablemente menos memoria 
+          auxiliar que \textit{Merge Sort} y \textit{Merge-Insertion Sort}, los cuales requieren memoria adicional de orden $O(n)$ para realizar las fusiones.  
+          Además, \textit{Quick Sort} suele presentar un menor overhead práctico asociado a movimientos de memoria y estructuras auxiliares.  Sin embargo, al tratarse 
+          de una implementación del mejor caso genérica, basada en arreglos previamente ordenados, esto no fue lo que se observó experimentalmente.
+\end{itemize}
+
+
+\subsubsection{Análisis de caso promedio}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Fig/sort_average_benchmark.pdf}
+    \caption{Benchmark de algoritmos de ordenamiento en caso promedio.}
+    \label{fig:sort_average}
+\end{figure}
+
+\subsubsection{Análisis de peor caso}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Fig/sort_worst_benchmark.pdf}
+    \caption{Benchmark de algoritmos de ordenamiento en peor caso.}
+    \label{fig:sort_worst}
+\end{figure}
+
+\subsection{Comparación de algoritmos de búsqueda}
+
+\subsubsection{Análisis de peor caso}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Fig/search_worst_benchmark.pdf}
+    \caption{Benchmark de algoritmos de búsqueda en peor caso.}
+    \label{fig:search_worst}
 \end{figure}
 
 \subsubsection{Análisis de caso promedio}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Fig/search_average_benchmark.pdf}
+    \caption{Benchmark de algoritmos de búsqueda en caso promedio.}
+    \label{fig:search_average}
+\end{figure}
+
+\subsection{Análisis de Quick Select}
+
+\subsubsection{Análisis de mejor caso}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Fig/select_best_benchmark.pdf}
+    \caption{Benchmark de Quick Select en mejor caso.}
+    \label{fig:select_best}
+\end{figure}
+
+\subsubsection{Análisis de caso promedio}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Fig/select_average_benchmark.pdf}
+    \caption{Benchmark de Quick Select en caso promedio.}
+    \label{fig:select_average}
+\end{figure}
 
 \subsubsection{Análisis de peor caso}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Fig/select_worst_benchmark.pdf}
+    \caption{Benchmark de Quick Select en peor caso.}
+    \label{fig:select_worst}
+\end{figure}
+

@@ -207,7 +207,8 @@ static int prepare_search_case(Deportista *deportistas, int count, SearchAlgorit
         return get_worst_target_id(deportistas, count);
     } else if(benchmarkCase == BENCHMARK_CASE_AVERAGE) {
         if(count > 0) {
-            return deportistas[count / 2]->id;
+            int rand_idx = rand() % count;
+            return deportistas[rand_idx]->id;
         }
     }
 

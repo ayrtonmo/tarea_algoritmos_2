@@ -16,16 +16,24 @@ Cada parámetro permite almacenar información, la cual puede ser utilizada para
 \subsection{Generación y carga de datos}
 La generación de datos de los parámetros asociados a deportistas se realizó mediante distintas funciones, las cuales permiten crear u obtener estos registros de manera pseudoaleatoria. La generación de un nombre se realizó permitiendo seleccionar aleatoriamente letras de un conjunto predefinido, escogiendo un tamaño de 3 a 8 caracteres. Para el equipo, se seleccionó aleatoriamente entre un conjunto específico de equipos de Esports. El ID se generó en forma incremental, asegurando la unicidad de cada registro. Por otro lado, el puntaje y la cantidad de competencias se generaron utilizando funciones de generación de números aleatorios dentro de rangos predefinidos. Esta metodología permitió crear un conjunto de datos variado y representativo para probar las funcionalidades del sistema. Posterior a la creación de los registros, estos se desordenaron utilizando el algoritmo de Fisher-Yates para garantizar que los datos no se encuentren en un orden específico, lo que es fundamental para evaluar correctamente el desempeño de los algoritmos de ordenamiento y búsqueda implementados. Finalmente, los registros generados se almacenaron en un archivo CSV, lo que facilita su posterior carga y manipulación dentro del programa.
 
+
+\subsection{Funcionalidades del sistema}
+Una vez cargados los datos de los deportistas, el programa permite realizar distintas operaciones combinando directrices de línea de comandos con menús interactivos.
+Entre las funcionalidades principales se encuentra el ordenamiento de los datos de los deportistas de
+manera ascendente o descendente utilizando el ID, puntaje, cantidad de competencias, nombre y equipo. Para ello, se preselecciona el algoritmo de busqueda mas optimo. Otra funcionalidad importante es la búsqueda de deportistas por ID, la cual puede realizarse mediante busqueda binaria recursiva, busqueda exponencial o búsqueda por interpolación. Para esta operación, el programa selecciona el algoritmo de búsqueda más adecuado.
+Además, el sistema permite mostrar un ranking con los mejores N deportistas de acuerdo a su puntaje, lo que logra una aplicación práctica del ordenamiento de datos dentro del contexto del problema planteado. En adicion a esto, se implemento la opcion de mostrar deportistas dentro de un rango de puntajes especificos. Se utilizo la busqueda binaria por rangos para esto. Junto con las operaciones anteriores, el programa incorpora la ejecución de benchmarks para medir el tiempo de ejecución de los algoritmos de ordenamiento y búsqueda. Estos resultados se almacenan en archivos CSV y posteriormente pueden utilizarse para generar gráficos comparativos mediante gnuplot, facilitando el análisis experimental de los algoritmos implementados. En conjunto, estas funcionalidades permiten que el sistema no solo cumpla con los requerimientos prácticos de manipulación de datos, sino que también sirva como base para el estudio comparativo del comportamiento de los algoritmos.
+
+
 \section{Algoritmos de ordenamiento}
 
-Existen muchísimos algoritmos de ordenamiento, desde algunos muy eficientes, que pueden llegar a ser de una complejidad temporal de apenas $O(n)$, 
-como \textit{Radix Sort}, hasta algunos extremadamente ineficientes, que pueden llegar incluso a ser de $O(n \times n!)$, como lo es el caso de 
-\textit{Bogo Sort}, pero en este trabajo nos centramos solamente en \textit{Merge Sort} y \textit{Quick Sort}, que son algoritmos relativamente
-eficientes y que emplean el principio de \textbf{"Divide y Vencerás"}. \\
+Existen numerosos algoritmos de ordenamiento, desde algunos muy eficientes, capaces de alcanzar una complejidad temporal de apenas $O(n)$, 
+como \textit{Radix Sort}, hasta otros extremadamente ineficientes, que incluso pueden llegar a $O(n \times n!)$, como es el caso de 
+\textit{Bogo Sort}. Sin embargo, en este trabajo nos centramos únicamente en \textit{Merge Sort} y \textit{Quick Sort}, dos algoritmos relativamente
+eficientes que emplean el principio de \textbf{"Divide y Vencerás"}. \\
 
 \subsection{Merge Sort}
 
-\textit{Merge Sort}, también conocido como "Ordenamiento por Mezcla", es un algoritmo de ordenamiento recursivo, que en cada paso va dividiendo el 
+\textit{Merge Sort}, también conocido como 'Ordenamiento por Mezcla', es un algoritmo de ordenamiento recursivo, que en cada paso va dividiendo el 
 arreglo en 2 subarreglos de aproximadamente la mitad del tamaño anterior, y eso lo hace hasta que todos los subarreglos sean de tamaño 1. Cuando eso sucede,
 se comienzan a combinar pares de subarreglos adyacentes, recorriéndolos linealmente para fusionarlos en el orden correcto, hasta que finalmente todo el 
 arreglo queda ordenado. \\
@@ -91,6 +99,8 @@ $T(n) \in O(n \log n)$ \\
 Por lo tanto, \textit{Merge Sort} posee complejidad temporal $O(n \log n)$ tanto en el mejor caso, como en el caso promedio y peor caso, ya que el arreglo 
 siempre se divide de manera uniforme, independientemente del orden inicial de los elementos. \\
 
+\subsubsection{Implementacion Merge Sort}
+En este proyecto, la implementacion de merge sort permite la busqueda de deportistas por distintos parametros, como el ID, el puntaje, la cantidad de competencias, el nombre o el equipo.  Para esto, se implemento una funcion de comparacion que recibe un parametro adicional que indica el criterio de ordenamiento a utilizar.  De esta manera, se puede reutilizar la misma implementacion de merge sort para ordenar por distintos parametros, simplemente cambiando la logica de comparacion segun el criterio seleccionado.  Ademas, se implemento la opcion de ordenar tanto en forma ascendente como descendente, lo que se logra modificando la logica de comparacion para invertir el orden cuando se desea ordenar de manera descendente. \\
 \newpage
 
 \subsection{Merge-Insertion Sort}
@@ -110,6 +120,9 @@ grandes, junto con la simplicidad y rapidez de \textit{Insertion Sort} en subarr
 En términos de complejidad asintótica, esta variante sigue perteneciendo a $O(n \log n)$, aunque en la práctica puede presentar mejoras de rendimiento 
 respecto a la versión clásica de \textit{Merge Sort}, dependiendo del umbral utilizado para decidir cuándo aplicar \textit{Insertion Sort}, que es uno de
 los aspectos que se analizará en el presente trabajo. \\
+
+\subsubsection{Implementacion Merge-Insertion Sort}
+Al igual que con la implementacion de merge sort, la implementacion de merge-insertion sort permite ordenar por distintos parametros, utilizando la misma funcion de comparacion y eleccion del sentido del ordenamiento. Ademas de esto se permite la entrega por paso de parametro del treshhold o criterio para utilizar insertion sort en sub-arreglos.  \\
 
 \subsection{Quick Sort}
 
@@ -150,6 +163,8 @@ Resolviendo esa recurrencia, se llega a que en el peor caso, \textit{Quick Sort}
 
 Un ejemplo de peor caso, es cuando el arreglo ya está ordenado y el método de seleccionar el pivote, es el primer elemento, o el último. \\
 
+\subsubsection{Implementacion Quick Sort}
+Para la implementacion de Quick Sort se decidio utilizar el metodo de seleccion de pivote de lomuto, el cual selecciona el ultimo elemento del arreglo como pivote. Esto eleccion se realizo teniendo en cuenta la facilidad de implementacion y la eficiencia que presenta en arreglos desordenados. Al igual que los algoritmos de ordenamiento anteriores, se implemento la opcion de ordenar por distintos parametros, utilizando la misma funcion de comparacion y eleccion del sentido del ordenamiento.
 \section{Algoritmos de búsqueda}
 
 \subsection{Búsqueda binaria recursiva}
@@ -168,6 +183,9 @@ El caso promedio ocurre cuando el elemento buscado se encuentra luego de una can
 espacio de búsqueda aproximadamente a la mitad en cada paso, el número de comparaciones sigue creciendo de forma logarítmica respecto al tamaño del arreglo. \\
 
 Por lo tanto, tanto el caso promedio como el peor caso presentan una complejidad temporal de $O(\log n)$
+
+\subsubsection{Implementacion Busqueda Binaria}
+Para la implementacion de la busqueda binaria recursiva, se decidio utilizar una funcion que requiere el arreglo de deportistas, el elemento a buscar (en el caso de los algoritmos de busqueda, este corresponde a un ID), el indicie de inicio y el indice de fin del rango de busqueda.  La funcion se llama a si misma recursivamente, ajustando los indices de inicio y fin segun corresponda, hasta encontrar el elemento buscado o hasta que el rango de busqueda se vuelva invalido.
 
 \subsection{Búsqueda exponencial}
 
@@ -201,6 +219,10 @@ El caso promedio ocurre cuando el elemento buscado se encuentra en una posición
 rápido el intervalo donde podría encontrarse el dato.  Posteriormente, la búsqueda binaria se aplica únicamente sobre dicho rango acotado.  Al igual que en el peor caso, 
 la complejidad temporal promedio de la búsqueda exponencial es $O(\log n)$. \\
 
+\subsubsection{Implementacion Busqueda Exponencial}
+En el caso de la implementacion de la busqueda exponencial, se decidio utilizar una funcion que recibe el arreglo de deportistas, el elemento a buscar (ID), y el tamaño del arreglo.  La funcion comienza revisando el primer elemento del arreglo, y luego va incrementando el indice de manera exponencial, hasta encontrar un elemento mayor que el buscado o hasta que el indice sobrepase el tamaño del arreglo.  Luego, se determina el rango acotado para aplicar busqueda binaria, y se llama a la funcion de busqueda binaria recursiva para realizar la busqueda dentro de dicho rango.
+
+
 \subsection{Búsqueda por interpolación}
 
 La búsqueda por interpolación es un algoritmo de búsqueda que requiere que los datos se encuentren previamente ordenados. Su funcionamiento consiste en estimar la 
@@ -231,6 +253,9 @@ espacio de búsqueda, pudiendo degradarse hasta una complejidad temporal de $O(n
 
 El caso promedio ocurre cuando los datos están parcialmente uniformes y sin valores que se escapen demasiado de los demás.   En ese caso la complejidad temporal es 
 de apenas $O(\log (\log n))$. \\
+
+\subsubsection{Implementacion Busqueda por Interpolacion}
+Para la implementacion de la busqueda por interpolacion, se decidio utilizar una funcion que reciba el arreglo de deportistas, el indice de inicial y final del rango de busqueda y el elemento a buscar (ID).  La funcion calcula la posicion estimada utilizando la formula de interpolacion, y luego compara el elemento ubicado en dicha posicion con el valor buscado.  Si ambos coinciden, la busqueda finaliza exitosamente.  En caso contrario, si el elemento en la posicion estimada es mayor que el valor buscado, se ajusta el indice final del rango de busqueda a la posicion estimada menos uno.  Por otro lado, si el elemento en la posicion estimada es menor que el valor buscado, se ajusta el indice inicial del rango de busqueda a la posicion estimada mas uno.  Luego, se llama recursivamente a la funcion de busqueda por interpolacion con los indices ajustados, hasta encontrar el elemento o hasta que el rango de busqueda se vuelva invalido. Es importante destacar que para utilizar este algoritmo, es necesario que el arreglo se encuentre previamente ordenado, ya que la formula de interpolacion se basa en la suposicion de que los datos estan distribuidos de manera uniforme.  Si el arreglo no esta ordenado, la formula de interpolacion no sera precisa y el algoritmo no funcionara correctamente. 
 
 \section{Algoritmos de selección}
 
@@ -274,4 +299,9 @@ cuya solución corresponde a una complejidad temporal de:
 \[
 O(n^2)
 \]
+
+\subsubsection{Implementacion Quick Select}
+Para la implementacion de Quick Select, se decidio utilizar permitir la eleccion del tipo de pivote, estando disponible; el primer elemento, el ultimo elemento, un elemento aleatorio o la mediana de tres.  Al igual que con los algoritmos de ordenamiento, se implemento la opcion de seleccionar por distintos parametros, utilizando una funcion de comparacion adaptada, se requiere tambien el indice de los elementos del inicio y el fin del rango de busqueda.
+
+\subsection{}
 
